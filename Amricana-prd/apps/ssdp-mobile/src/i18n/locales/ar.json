@@ -1,0 +1,40 @@
+{
+  "login": {
+    "title": "تسجيل الدخول",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "loginButton": "دخول",
+    "forgotPassword": "نسيت كلمة المرور؟"
+  },
+  "dashboard": {
+    "welcome": "مرحباً",
+    "todayTarget": "هدف اليوم",
+    "achieved": "تم تحقيقه",
+    "pendingOrders": "الطلبات المعلقة",
+    "completedDeliveries": "التسليمات المكتملة"
+  },
+  "orders": {
+    "newOrder": "طلب جديد",
+    "orderHistory": "تاريخ الطلبات",
+    "totalAmount": "المبلغ الإجمالي",
+    "status": "الحالة",
+    "pending": "معلق",
+    "completed": "مكتمل",
+    "cancelled": "ملغي"
+  },
+  "products": {
+    "sweets": "حلويات",
+    "baklava": "بقلاوة",
+    "kunafa": "كنافة",
+    "maamoul": "معمول",
+    "qatayef": "قطايف",
+    "dates": "تمر"
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "orders": "الطلبات",
+    "customers": "العملاء",
+    "reports": "التقارير",
+    "profile": "الملف الشخصي"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "login": {
+    "title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "loginButton": "Login",
+    "forgotPassword": "Forgot Password?"
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "todayTarget": "Today's Target",
+    "achieved": "Achieved",
+    "pendingOrders": "Pending Orders",
+    "completedDeliveries": "Completed Deliveries"
+  },
+  "orders": {
+    "newOrder": "New Order",
+    "orderHistory": "Order History",
+    "totalAmount": "Total Amount",
+    "status": "Status",
+    "pending": "Pending",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "products": {
+    "sweets": "Sweets",
+    "baklava": "Baklava",
+    "kunafa": "Kunafa",
+    "maamoul": "Maamoul",
+    "qatayef": "Qatayef",
+    "dates": "Dates"
+  },
+  "navigation": {
+    "home": "Home",
+    "orders": "Orders",
+    "customers": "Customers",
+    "reports": "Reports",
+    "profile": "Profile"
+  }
+}

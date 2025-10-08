@@ -7,13 +7,21 @@
     "dev:all": "concurrently \"npm run dev:web\" \"npm run dev:mobile\" \"npm run dev:services\"",
     "dev:web": "cd apps/ssdp-web && npm run dev",
     "dev:mobile": "cd apps/ssdp-mobile && npm start",
-    "dev:services": "cd services && docker-compose up -d",
+    "dev:services": "docker-compose up -d",
     "build": "npm run build:web && npm run build:mobile",
     "build:web": "cd apps/ssdp-web && npm run build",
     "build:mobile": "cd apps/ssdp-mobile && npm run build",
+    "deploy": "./scripts/deploy.sh",
+    "deploy:workers": "cd workers && wrangler deploy",
     "test": "jest",
+    "test:mobile": "cd apps/ssdp-mobile && npm test",
+    "test:web": "cd apps/ssdp-web && npm test",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "setup": "npm install && cd apps/ssdp-mobile && npm install && cd ../ssdp-web && npm install"
   },
   "keywords": [
     "saudi-arabia",
@@ -22,7 +30,8 @@
     "ai",
     "bilingual",
     "zatca",
-    "vision-2030"
+    "vision-2030",
+    "brainsait"
   ],
   "author": "BrainSAIT <info@brainsait.com>",
   "license": "MIT",
@@ -34,12 +43,17 @@
     "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
     "jest": "^29.7.0",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "@types/node": "^20.8.0"
   },
   "workspaces": [
     "apps/*",
     "services/*",
     "workers/*",
     "packages/*"
-  ]
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
 }

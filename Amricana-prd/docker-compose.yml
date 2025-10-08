@@ -1,0 +1,148 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ssdp_db
+      POSTGRES_USER: ssdp_user
+      POSTGRES_PASSWORD: ssdp_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - ssdp-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ssdp-network
+
+  # Distribution Service
+  distribution-service:
+    build:
+      context: ./services/distribution-service
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://ssdp_user:ssdp_password@postgres:5432/ssdp_db
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ssdp-network
+
+  # AI Forecasting Service
+  ai-forecasting-service:
+    build:
+      context: ./services/ai-forecasting-service
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql://ssdp_user:ssdp_password@postgres:5432/ssdp_db
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ssdp-network
+
+  # Sales Service
+  sales-service:
+    build:
+      context: ./services/sales-service
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=postgresql://ssdp_user:ssdp_password@postgres:5432/ssdp_db
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ssdp-network
+
+  # Finance Service (ZATCA Integration)
+  finance-service:
+    build:
+      context: ./services/finance-service
+      dockerfile: Dockerfile
+    ports:
+      - "8003:8003"
+    environment:
+      - DATABASE_URL=postgresql://ssdp_user:ssdp_password@postgres:5432/ssdp_db
+      - REDIS_URL=redis://redis:6379
+      - ZATCA_API_URL=https://gw-fatoora.zatca.gov.sa
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./certificates:/app/certificates
+    networks:
+      - ssdp-network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - distribution-service
+      - ai-forecasting-service
+      - sales-service
+      - finance-service
+    networks:
+      - ssdp-network
+
+  # Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - ssdp-network
+
+  # Grafana Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+    networks:
+      - ssdp-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  ssdp-network:
+    driver: bridge
