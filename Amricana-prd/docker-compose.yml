@@ -74,6 +74,19 @@ services:
     networks:
       - ssdp-network
 
+  # Saudi API Integration Service
+  saudi-api-service:
+    build:
+      context: ./services/saudi-api-service
+      dockerfile: Dockerfile
+    ports:
+      - "8004:8004"
+    environment:
+      - WATHQ_API_KEY=Gkry243IzGXLzG88mKsbmGN6oUiUsI1E
+      - WATHQ_API_PASSWORD=XJA6NGmEQhnyA7xB
+    networks:
+      - ssdp-network
+
   # Finance Service (ZATCA Integration)
   finance-service:
     build:

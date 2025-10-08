@@ -8,6 +8,7 @@ from datetime import datetime
 import redis
 import json
 from products import router as products_router
+from outlet_verification import router as outlets_router
 
 app = FastAPI(
     title="SSDP Distribution Service",
@@ -15,8 +16,9 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Include products router
+# Include routers
 app.include_router(products_router)
+app.include_router(outlets_router)
 
 # CORS middleware for web app integration
 app.add_middleware(
