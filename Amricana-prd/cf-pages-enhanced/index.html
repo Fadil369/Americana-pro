@@ -132,6 +132,37 @@
             margin: 0 auto;
         }
 
+        .header-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+            color: var(--sandstone-gray);
+        }
+
+        .nav-btn.active {
+            background: var(--brainsait-orange);
+            color: white;
+        }
+
+        .nav-btn:hover:not(.active) {
+            background: var(--glass-bg);
+            color: var(--royal-midnight);
+        }
+
+        [data-theme="dark"] .nav-btn:hover:not(.active) {
+            color: white;
+        }
+
         .brand {
             display: flex;
             align-items: center;
@@ -413,10 +444,103 @@
 
         @media (max-width: 768px) {
             .header-container { padding: 0 1rem; }
+            .header-nav { display: none; }
             .hero-content h1 { font-size: 2rem; }
             .hero-content p { font-size: 1rem; }
             .kpi-dashboard { grid-template-columns: 1fr; gap: 1rem; }
             .main-content { padding: 1rem; }
+        }
+
+        /* Section Routing */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--royal-midnight);
+        }
+
+        [data-theme="dark"] .section-header h2 {
+            color: white;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-primary {
+            background: var(--brainsait-orange);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--sweet-amber);
+            transform: translateY(-2px);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .analytics-card {
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .analytics-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--royal-midnight);
+            margin-bottom: 1rem;
+        }
+
+        [data-theme="dark"] .analytics-card h3 {
+            color: white;
+        }
+
+        .analytics-card p {
+            color: var(--sandstone-gray);
+            line-height: 1.5;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--sandstone-gray);
+            font-size: 1.125rem;
         }
     </style>
 </head>
@@ -436,10 +560,22 @@
             <div class="brand">
                 <div class="brand-icon">🧠</div>
                 <div class="brand-text">
-                    <h1>SSDP Ultimate</h1>
+                    <h1>SSDP Platform</h1>
                     <p>الذكاء الاصطناعي للحلويات</p>
                 </div>
             </div>
+            
+            <nav class="header-nav">
+                <button class="nav-btn active" onclick="showSection('dashboard')" data-section="dashboard">
+                    📊 لوحة التحكم
+                </button>
+                <button class="nav-btn" onclick="showSection('products')" data-section="products">
+                    🍬 المنتجات
+                </button>
+                <button class="nav-btn" onclick="showSection('analytics')" data-section="analytics">
+                    📈 التحليلات
+                </button>
+            </nav>
             
             <div class="header-controls">
                 <button class="header-btn" onclick="toggleLanguage()" title="تغيير اللغة">🌐</button>
@@ -455,70 +591,105 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Hero Section -->
-        <section class="hero-section">
-            <div class="hero-content">
-                <h1>منصة توزيع الحلويات الذكية</h1>
-                <p>تمكين سوق توزيع الحلويات في المملكة العربية السعودية بالذكاء الاصطناعي</p>
-                <div class="vision-badge">
-                    🇸🇦 رؤية المملكة 2030 - التحول الرقمي
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="content-section active">
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1>منصة توزيع الحلويات الذكية</h1>
+                    <p>تمكين سوق توزيع الحلويات في المملكة العربية السعودية بالذكاء الاصطناعي</p>
+                    <div class="vision-badge">
+                        🇸🇦 رؤية المملكة 2030 - التحول الرقمي
+                    </div>
+                </div>
+                <div class="floating-elements">
+                    <div class="floating-icon">🍰</div>
+                    <div class="floating-icon">🧁</div>
+                    <div class="floating-icon">🍯</div>
                 </div>
             </div>
-            <div class="floating-elements">
-                <div class="floating-icon">🍰</div>
-                <div class="floating-icon">🧁</div>
-                <div class="floating-icon">🍯</div>
+
+            <!-- KPI Dashboard -->
+            <div class="kpi-dashboard">
+                <div class="kpi-card">
+                    <div class="kpi-icon">💰</div>
+                    <div class="kpi-value" id="total-sales">125,430</div>
+                    <div class="kpi-label">إجمالي المبيعات اليوم</div>
+                    <div class="kpi-trend positive">+12.5% ↗</div>
+                    <div class="telemetry-overlay">LIVE</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-icon">🚛</div>
+                    <div class="kpi-value" id="active-vehicles">24</div>
+                    <div class="kpi-label">المركبات النشطة</div>
+                    <div class="kpi-trend positive">+2 ↗</div>
+                    <div class="telemetry-overlay">GPS</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-icon">👥</div>
+                    <div class="kpi-value" id="active-customers">1,234</div>
+                    <div class="kpi-label">العملاء النشطون</div>
+                    <div class="kpi-trend positive">+5.2% ↗</div>
+                    <div class="telemetry-overlay">AI</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-icon">📦</div>
+                    <div class="kpi-value" id="completed-orders">89</div>
+                    <div class="kpi-label">الطلبات المكتملة</div>
+                    <div class="kpi-trend positive">+8.1% ↗</div>
+                    <div class="telemetry-overlay">SYNC</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-icon">🍬</div>
+                    <div class="kpi-value" id="total-products">17</div>
+                    <div class="kpi-label">المنتجات المتاحة</div>
+                    <div class="kpi-trend positive">+15 ↗</div>
+                    <div class="telemetry-overlay">DB</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-icon">💳</div>
+                    <div class="kpi-value" id="collection-rate">92.5%</div>
+                    <div class="kpi-label">معدل التحصيل</div>
+                    <div class="kpi-trend positive">+3.2% ↗</div>
+                    <div class="telemetry-overlay">ZATCA</div>
+                </div>
             </div>
         </section>
 
-        <!-- KPI Dashboard -->
-        <section class="kpi-dashboard">
-            <div class="kpi-card">
-                <div class="kpi-icon">💰</div>
-                <div class="kpi-value" id="total-sales">125,430</div>
-                <div class="kpi-label">إجمالي المبيعات اليوم</div>
-                <div class="kpi-trend positive">+12.5% ↗</div>
-                <div class="telemetry-overlay">LIVE</div>
+        <!-- Products Section -->
+        <section id="products-section" class="content-section">
+            <div class="section-header">
+                <h2>🍬 إدارة المنتجات</h2>
+                <button class="btn btn-primary" onclick="loadProducts()">تحديث المنتجات</button>
             </div>
-            
-            <div class="kpi-card">
-                <div class="kpi-icon">🚛</div>
-                <div class="kpi-value" id="active-vehicles">24</div>
-                <div class="kpi-label">المركبات النشطة</div>
-                <div class="kpi-trend positive">+2 ↗</div>
-                <div class="telemetry-overlay">GPS</div>
+            <div id="products-grid" class="products-grid">
+                <div class="loading">جاري تحميل المنتجات...</div>
             </div>
-            
-            <div class="kpi-card">
-                <div class="kpi-icon">👥</div>
-                <div class="kpi-value" id="active-customers">1,234</div>
-                <div class="kpi-label">العملاء النشطون</div>
-                <div class="kpi-trend positive">+5.2% ↗</div>
-                <div class="telemetry-overlay">AI</div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section id="analytics-section" class="content-section">
+            <div class="section-header">
+                <h2>📈 التحليلات والتقارير</h2>
             </div>
-            
-            <div class="kpi-card">
-                <div class="kpi-icon">📦</div>
-                <div class="kpi-value" id="completed-orders">89</div>
-                <div class="kpi-label">الطلبات المكتملة</div>
-                <div class="kpi-trend positive">+8.1% ↗</div>
-                <div class="telemetry-overlay">SYNC</div>
-            </div>
-            
-            <div class="kpi-card">
-                <div class="kpi-icon">🍬</div>
-                <div class="kpi-value" id="total-products">17</div>
-                <div class="kpi-label">المنتجات المتاحة</div>
-                <div class="kpi-trend positive">+15 ↗</div>
-                <div class="telemetry-overlay">DB</div>
-            </div>
-            
-            <div class="kpi-card">
-                <div class="kpi-icon">💳</div>
-                <div class="kpi-value" id="collection-rate">92.5%</div>
-                <div class="kpi-label">معدل التحصيل</div>
-                <div class="kpi-trend positive">+3.2% ↗</div>
-                <div class="telemetry-overlay">ZATCA</div>
+            <div class="analytics-grid">
+                <div class="analytics-card glass">
+                    <h3>تحليل المبيعات</h3>
+                    <p>تقارير مفصلة عن أداء المبيعات والاتجاهات</p>
+                </div>
+                <div class="analytics-card glass">
+                    <h3>أداء المركبات</h3>
+                    <p>تتبع كفاءة التوصيل والمسارات المحسنة</p>
+                </div>
+                <div class="analytics-card glass">
+                    <h3>رضا العملاء</h3>
+                    <p>مؤشرات رضا العملاء وتحليل التغذية الراجعة</p>
+                </div>
             </div>
         </section>
     </main>
@@ -587,6 +758,54 @@
         }
 
         // Global functions
+        window.showSection = (sectionName) => {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`${sectionName}-section`).classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+            
+            // Load section-specific data
+            if (sectionName === 'products') {
+                ssdpUltimate.loadProducts();
+            }
+        };
+
+        window.loadProducts = async () => {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '<div class="loading">جاري تحميل المنتجات...</div>';
+            
+            try {
+                const response = await fetch('https://ssdp-api.dr-mf-12298.workers.dev/api/products');
+                const data = await response.json();
+                
+                if (data.success && data.products) {
+                    grid.innerHTML = data.products.map(product => `
+                        <div class="product-card glass" style="padding: 1.5rem; border-radius: 16px; text-align: center;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🍬</div>
+                            <h4 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--royal-midnight);">${product.name_ar}</h4>
+                            <p style="font-size: 0.875rem; color: var(--sandstone-gray); margin-bottom: 1rem;">${product.name_en}</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 1.25rem; font-weight: 700; color: var(--brainsait-orange);">${product.price} ريال</span>
+                                <span style="font-size: 0.875rem; color: var(--oasis-green);">${product.stock_quantity || 0} متوفر</span>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    grid.innerHTML = '<div class="loading">لا توجد منتجات متاحة</div>';
+                }
+            } catch (error) {
+                grid.innerHTML = '<div class="loading">خطأ في تحميل المنتجات</div>';
+            }
+        };
         window.toggleLanguage = () => {
             ssdpUltimate.currentLang = ssdpUltimate.currentLang === 'ar' ? 'en' : 'ar';
             document.documentElement.setAttribute('lang', ssdpUltimate.currentLang);
