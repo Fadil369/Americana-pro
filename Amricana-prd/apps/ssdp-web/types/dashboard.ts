@@ -96,3 +96,43 @@ export interface User {
   created_at: string
   updated_at: string
 }
+
+// BRAINSAIT: Roadmap and KPI tracking types for SSDP platform
+export interface RoadmapPhase {
+  phase: number
+  name_en: string
+  name_ar: string
+  duration: string
+  progress: number
+  status: 'completed' | 'in-progress' | 'planned'
+  items: RoadmapItem[]
+}
+
+export interface RoadmapItem {
+  id: string
+  title_en: string
+  title_ar: string
+  completed: boolean
+}
+
+export interface KPIMetric {
+  id: string
+  name_en: string
+  name_ar: string
+  current_value: number
+  target_value: number
+  unit: string
+  trend: 'up' | 'down' | 'stable'
+  category: 'adoption' | 'retention' | 'efficiency' | 'satisfaction' | 'financial'
+}
+
+export interface RoadmapData {
+  phases: RoadmapPhase[]
+  overall_progress: number
+  current_phase: number
+}
+
+export interface KPIData {
+  metrics: KPIMetric[]
+  last_updated: string
+}
