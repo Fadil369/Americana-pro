@@ -1,0 +1,72 @@
+[
+  {
+    "name_ar": "كنافة بالجبن الطازجة",
+    "name_en": "Fresh Cheese Kunafa",
+    "description_ar": "كنافة طازجة محشوة بالجبن الطبيعي",
+    "description_en": "Fresh kunafa filled with natural cheese",
+    "image_url": "https://example.com/kunafa.jpg",
+    "price": 25.5,
+    "category": "حلويات مبردة",
+    "category_en": "Refrigerated Sweets",
+    "brand": "Americana",
+    "is_active": true,
+    "requires_refrigeration": true,
+    "sku": "AMR-KUN-001"
+  },
+  {
+    "name_ar": "مهلبية بالفستق",
+    "name_en": "Pistachio Muhallabia",
+    "description_ar": "مهلبية كريمية مزينة بالفستق الحلبي",
+    "description_en": "Creamy muhallabia topped with Aleppo pistachios",
+    "image_url": "https://example.com/muhallabia.jpg",
+    "price": 18.75,
+    "category": "حلويات مبردة",
+    "category_en": "Refrigerated Sweets",
+    "brand": "Americana",
+    "is_active": true,
+    "requires_refrigeration": true,
+    "sku": "AMR-MUH-001"
+  },
+  {
+    "name_ar": "أم علي بالمكسرات",
+    "name_en": "Om Ali with Mixed Nuts",
+    "description_ar": "أم علي تقليدية بالحليب والمكسرات المشكلة",
+    "description_en": "Traditional Om Ali with milk and mixed nuts",
+    "image_url": "https://example.com/omali.jpg",
+    "price": 22.0,
+    "category": "حلويات مبردة",
+    "category_en": "Refrigerated Sweets",
+    "brand": "Americana",
+    "is_active": true,
+    "requires_refrigeration": true,
+    "sku": "AMR-OMA-001"
+  },
+  {
+    "name_ar": "تشيز كيك بالتوت",
+    "name_en": "Berry Cheesecake",
+    "description_ar": "تشيز كيك كريمي بطبقة التوت الطازج",
+    "description_en": "Creamy cheesecake with fresh berry topping",
+    "image_url": "https://example.com/cheesecake.jpg",
+    "price": 35.0,
+    "category": "حلويات مبردة",
+    "category_en": "Refrigerated Sweets",
+    "brand": "Americana",
+    "is_active": true,
+    "requires_refrigeration": true,
+    "sku": "AMR-CHE-001"
+  },
+  {
+    "name_ar": "تيراميسو كلاسيك",
+    "name_en": "Classic Tiramisu",
+    "description_ar": "تيراميسو إيطالي أصيل بالقهوة والماسكاربوني",
+    "description_en": "Authentic Italian tiramisu with coffee and mascarpone",
+    "image_url": "https://example.com/tiramisu.jpg",
+    "price": 28.5,
+    "category": "حلويات مبردة",
+    "category_en": "Refrigerated Sweets",
+    "brand": "Americana",
+    "is_active": true,
+    "requires_refrigeration": true,
+    "sku": "AMR-TIR-001"
+  }
+]

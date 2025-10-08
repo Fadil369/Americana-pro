@@ -7,12 +7,16 @@ import uvicorn
 from datetime import datetime
 import redis
 import json
+from products import router as products_router
 
 app = FastAPI(
     title="SSDP Distribution Service",
     description="Smart Sweet Distribution Platform - Distribution Management API",
     version="1.0.0"
 )
+
+# Include products router
+app.include_router(products_router)
 
 # CORS middleware for web app integration
 app.add_middleware(
