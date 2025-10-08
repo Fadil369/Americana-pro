@@ -1,46 +1,632 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة توزيع الحلويات الذكية - SSDP</title>
+    <title>منصة توزيع الحلويات الذكية - SSDP Ultimate</title>
+    <meta name="description" content="منصة توزيع الحلويات الذكية المدعومة بالذكاء الاصطناعي - رؤية المملكة 2030">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0a192f">
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0a192f 0%, #f4511e 100%);
-            color: white; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+        :root {
+            --sweet-amber: #ea580c;
+            --royal-midnight: #1a365d;
+            --fresh-mint: #0ea5e9;
+            --oasis-green: #10b981;
+            --desert-gold: #f59e0b;
+            --sandstone-gray: #64748b;
+            --brainsait-navy: #0a192f;
+            --brainsait-orange: #f4511e;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --font-arabic: 'Noto Sans Arabic', system-ui, sans-serif;
+            --font-english: 'Inter', 'Manrope', system-ui, sans-serif;
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .container { text-align: center; max-width: 600px; padding: 2rem; }
-        .logo { font-size: 5rem; margin-bottom: 1rem; animation: pulse 2s infinite; }
-        .title { font-size: 2.5rem; margin-bottom: 1rem; font-weight: 700; }
-        .subtitle { font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9; }
-        .btn { background: rgba(255,255,255,0.2); border: none; padding: 1rem 2rem; border-radius: 12px; color: white; cursor: pointer; margin: 0.5rem; transition: all 0.3s; font-size: 1rem; text-decoration: none; display: inline-block; }
-        .btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 16px; scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-arabic);
+            line-height: 1.6;
+            color: var(--royal-midnight);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            overflow-x: hidden;
+            direction: rtl;
+            text-align: right;
+            transition: all var(--transition-base);
+        }
+
+        [data-theme="dark"] body {
+            color: white;
+            background: linear-gradient(135deg, var(--brainsait-navy) 0%, #000000 100%);
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--brainsait-navy) 0%, var(--brainsait-orange) 50%, var(--royal-midnight) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity var(--transition-slow), visibility var(--transition-slow);
+        }
+
+        .loading-screen.hidden { opacity: 0; visibility: hidden; }
+
+        .loading-animation { text-align: center; color: white; }
+
+        .ssdp-logo {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            animation: ssdpPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes ssdpPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.1) rotate(5deg); opacity: 0.8; }
+        }
+
+        .loading-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            animation: fadeInOut 2s ease-in-out infinite;
+        }
+
+        .vision-text {
+            font-size: 1rem;
+            opacity: 0.9;
+            animation: fadeInOut 2s ease-in-out infinite 0.5s;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 1; }
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 80px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            padding: 0 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .brand-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--brainsait-navy) 0%, var(--brainsait-orange) 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            font-weight: 700;
+            animation: brandRotate 10s linear infinite;
+        }
+
+        @keyframes brandRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .brand-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--royal-midnight);
+            margin-bottom: 4px;
+            font-family: var(--font-english);
+        }
+
+        [data-theme="dark"] .brand-text h1 { color: white; }
+
+        .brand-text p {
+            font-size: 0.875rem;
+            color: var(--brainsait-orange);
+            font-weight: 500;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+
+        .header-btn:hover {
+            background: var(--glass-bg);
+            transform: scale(1.05);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            background: var(--brainsait-orange);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bounce 2s infinite;
+        }
+
+        .vision-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--oasis-green) 0%, var(--brainsait-orange) 50%, var(--royal-midnight) 100%);
+            animation: progressFlow 3s ease-in-out infinite;
+        }
+
+        @keyframes progressFlow {
+            0%, 100% { transform: scaleX(0.8); }
+            50% { transform: scaleX(1); }
+        }
+
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--brainsait-navy) 0%, var(--brainsait-orange) 50%, var(--royal-midnight) 100%);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+            color: white;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            animation: slideInDown 1s ease-out;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            animation: slideInUp 1s ease-out 0.2s both;
+        }
+
+        .vision-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            animation: slideInUp 1s ease-out 0.4s both;
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 2.5rem;
+            opacity: 0.3;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-icon:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .floating-icon:nth-child(2) { top: 60%; left: 80%; animation-delay: 2s; }
+        .floating-icon:nth-child(3) { top: 30%; left: 70%; animation-delay: 4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .kpi-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .kpi-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--brainsait-navy) 0%, var(--brainsait-orange) 100%);
+            transform: scaleX(0);
+            transition: transform var(--transition-base);
+        }
+
+        .kpi-card:hover::before { transform: scaleX(1); }
+
+        .kpi-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .kpi-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--royal-midnight);
+            margin-bottom: 0.5rem;
+            font-family: var(--font-english);
+            animation: countUp 2s ease-out;
+        }
+
+        [data-theme="dark"] .kpi-value { color: white; }
+
+        .kpi-label {
+            font-size: 1rem;
+            color: var(--sandstone-gray);
+            margin-bottom: 1rem;
+        }
+
+        .kpi-trend {
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .kpi-trend.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--oasis-green);
+        }
+
+        .telemetry-overlay {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes countUp {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% {
+                animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+                transform: translate3d(0,0,0);
+            }
+            40%, 43% {
+                animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+                transform: translate3d(0, -8px, 0);
+            }
+            70% {
+                animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+                transform: translate3d(0, -4px, 0);
+            }
+            90% { transform: translate3d(0,-2px,0); }
+        }
+
+        @media (max-width: 768px) {
+            .header-container { padding: 0 1rem; }
+            .hero-content h1 { font-size: 2rem; }
+            .hero-content p { font-size: 1rem; }
+            .kpi-dashboard { grid-template-columns: 1fr; gap: 1rem; }
+            .main-content { padding: 1rem; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">🧠🍯</div>
-        <h1 class="title">منصة توزيع الحلويات الذكية</h1>
-        <p class="subtitle">مدعومة من BrainSAIT - الذكاء الاصطناعي للأعمال</p>
-        
-        <div>
-            <a href="/ultimate" class="btn">🚀 المنصة الكاملة</a>
-        </div>
-
-        <div style="margin-top: 2rem; font-size: 0.9rem; opacity: 0.7;">
-            <p>🇸🇦 صُنع بـ ❤️ في المملكة العربية السعودية</p>
-            <p>BrainSAIT © 2024</p>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-animation">
+            <div class="ssdp-logo">🧠🍯</div>
+            <div class="loading-text">جاري تحميل منصة توزيع الحلويات الذكية</div>
+            <div class="vision-text">مدعومة من BrainSAIT - رؤية المملكة 2030</div>
         </div>
     </div>
 
+    <!-- Header -->
+    <header class="header glass">
+        <div class="header-container">
+            <div class="brand">
+                <div class="brand-icon">🧠</div>
+                <div class="brand-text">
+                    <h1>SSDP Ultimate</h1>
+                    <p>الذكاء الاصطناعي للحلويات</p>
+                </div>
+            </div>
+            
+            <div class="header-controls">
+                <button class="header-btn" onclick="toggleLanguage()" title="تغيير اللغة">🌐</button>
+                <button class="header-btn" onclick="toggleTheme()" title="تغيير المظهر">🌙</button>
+                <button class="header-btn" onclick="showNotifications()" title="الإشعارات">
+                    🔔
+                    <span class="notification-badge">5</span>
+                </button>
+            </div>
+        </div>
+        <div class="vision-progress"></div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>منصة توزيع الحلويات الذكية</h1>
+                <p>تمكين سوق توزيع الحلويات في المملكة العربية السعودية بالذكاء الاصطناعي</p>
+                <div class="vision-badge">
+                    🇸🇦 رؤية المملكة 2030 - التحول الرقمي
+                </div>
+            </div>
+            <div class="floating-elements">
+                <div class="floating-icon">🍰</div>
+                <div class="floating-icon">🧁</div>
+                <div class="floating-icon">🍯</div>
+            </div>
+        </section>
+
+        <!-- KPI Dashboard -->
+        <section class="kpi-dashboard">
+            <div class="kpi-card">
+                <div class="kpi-icon">💰</div>
+                <div class="kpi-value" id="total-sales">125,430</div>
+                <div class="kpi-label">إجمالي المبيعات اليوم</div>
+                <div class="kpi-trend positive">+12.5% ↗</div>
+                <div class="telemetry-overlay">LIVE</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-icon">🚛</div>
+                <div class="kpi-value" id="active-vehicles">24</div>
+                <div class="kpi-label">المركبات النشطة</div>
+                <div class="kpi-trend positive">+2 ↗</div>
+                <div class="telemetry-overlay">GPS</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-icon">👥</div>
+                <div class="kpi-value" id="active-customers">1,234</div>
+                <div class="kpi-label">العملاء النشطون</div>
+                <div class="kpi-trend positive">+5.2% ↗</div>
+                <div class="telemetry-overlay">AI</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-icon">📦</div>
+                <div class="kpi-value" id="completed-orders">89</div>
+                <div class="kpi-label">الطلبات المكتملة</div>
+                <div class="kpi-trend positive">+8.1% ↗</div>
+                <div class="telemetry-overlay">SYNC</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-icon">🍬</div>
+                <div class="kpi-value" id="total-products">17</div>
+                <div class="kpi-label">المنتجات المتاحة</div>
+                <div class="kpi-trend positive">+15 ↗</div>
+                <div class="telemetry-overlay">DB</div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-icon">💳</div>
+                <div class="kpi-value" id="collection-rate">92.5%</div>
+                <div class="kpi-label">معدل التحصيل</div>
+                <div class="kpi-trend positive">+3.2% ↗</div>
+                <div class="telemetry-overlay">ZATCA</div>
+            </div>
+        </section>
+    </main>
+
     <script>
-        // Auto-redirect to ultimate platform after 3 seconds
-        setTimeout(() => {
-            window.location.href = '/ultimate';
-        }, 3000);
+        // SSDP Ultimate Platform
+        class SSDPUltimate {
+            constructor() {
+                this.apiBase = 'https://ssdp-api.dr-mf-12298.workers.dev/api';
+                this.currentLang = 'ar';
+                this.currentTheme = 'light';
+                this.init();
+            }
+
+            init() {
+                this.hideLoadingScreen();
+                this.startRealTimeUpdates();
+            }
+
+            hideLoadingScreen() {
+                setTimeout(() => {
+                    document.getElementById('loading-screen').classList.add('hidden');
+                }, 2000);
+            }
+
+            startRealTimeUpdates() {
+                setInterval(() => {
+                    this.updateKPIs();
+                }, 30000);
+            }
+
+            updateKPIs() {
+                const kpis = ['total-sales', 'active-vehicles', 'active-customers', 'completed-orders'];
+                kpis.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        const current = parseInt(element.textContent.replace(/[^\d]/g, ''));
+                        const variation = Math.floor(Math.random() * 10) - 5;
+                        const newValue = Math.max(0, current + variation);
+                        element.textContent = id === 'total-sales' ? 
+                            newValue.toLocaleString('ar-SA') : newValue.toString();
+                    }
+                });
+            }
+
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed; top: 100px; right: 20px; z-index: 10000;
+                    background: ${type === 'success' ? '#10b981' : '#0ea5e9'};
+                    color: white; padding: 1rem 1.5rem; border-radius: 12px;
+                    box-shadow: 0 8px 25px rgba(0,0,0,0.2); font-size: 0.875rem;
+                    animation: slideInRight 0.3s ease-out;
+                `;
+                notification.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span>${type === 'success' ? '✅' : 'ℹ️'}</span>
+                        <span>${message}</span>
+                        <button onclick="this.parentElement.parentElement.remove()" 
+                                style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; margin-left: auto;">×</button>
+                    </div>
+                `;
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 5000);
+            }
+        }
+
+        // Global functions
+        window.toggleLanguage = () => {
+            ssdpUltimate.currentLang = ssdpUltimate.currentLang === 'ar' ? 'en' : 'ar';
+            document.documentElement.setAttribute('lang', ssdpUltimate.currentLang);
+            document.documentElement.setAttribute('dir', ssdpUltimate.currentLang === 'ar' ? 'rtl' : 'ltr');
+            ssdpUltimate.showNotification(
+                ssdpUltimate.currentLang === 'ar' ? 'تم تغيير اللغة إلى العربية' : 'Language changed to English',
+                'success'
+            );
+        };
+
+        window.toggleTheme = () => {
+            ssdpUltimate.currentTheme = ssdpUltimate.currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', ssdpUltimate.currentTheme);
+            document.querySelector('[onclick="toggleTheme()"]').textContent = 
+                ssdpUltimate.currentTheme === 'light' ? '🌙' : '☀️';
+            ssdpUltimate.showNotification(
+                ssdpUltimate.currentTheme === 'dark' ? 'تم تفعيل المظهر الداكن' : 'تم تفعيل المظهر الفاتح',
+                'success'
+            );
+        };
+
+        window.showNotifications = () => {
+            ssdpUltimate.showNotification('لديك 5 إشعارات جديدة', 'info');
+        };
+
+        // Initialize
+        let ssdpUltimate;
+        document.addEventListener('DOMContentLoaded', () => {
+            ssdpUltimate = new SSDPUltimate();
+        });
+
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
