@@ -276,8 +276,8 @@
         }
     </style>
 </head>
-<body><a href="#main-content" class="skip-link" style="position: absolute; top: -40px; left: 6px; background: var(--primary); color: white; padding: 8px; text-decoration: none; border-radius: 4px; z-index: 10001; transition: top 0.3s;" onfocus="this.style.top='6px'" onblur="this.style.top='-40px'">تخطي إلى المحتوى الرئيسي</a>
-    <div id="loading-screen" class="loading-screen" role="dialog" aria-label="جاري التحميل" aria-live="polite">
+<body>
+    <div id="loading-screen" class="loading-screen">
         <div class="loading-content">
             <div class="loading-logo">🧠🍯</div>
             <div class="loading-text">جاري تحميل منصة توزيع الحلويات الذكية</div>
@@ -293,25 +293,25 @@
                     <p>الذكاء الاصطناعي للحلويات</p>
                 </div>
             </div>
-            <nav class="nav" role="navigation" aria-label="التنقل الرئيسي">
+            <nav class="nav">
                 <button class="nav-btn active" onclick="showSection('dashboard')" data-section="dashboard">📊 لوحة التحكم</button>
                 <button class="nav-btn" onclick="showSection('products')" data-section="products">🍬 المنتجات</button>
                 <button class="nav-btn" onclick="showSection('analytics')" data-section="analytics">📈 التحليلات</button>
                 <button class="nav-btn" onclick="showSection('map')" data-section="map">🗺️ الخريطة</button>
             </nav>
             <div class="controls">
-                <button class="control-btn" onclick="toggleLang()" title="تغيير اللغة" aria-label="تغيير اللغة" role="button" tabindex="0">🌐</button>
-                <button class="control-btn" onclick="toggleTheme()" title="تغيير المظهر" aria-label="تغيير المظهر" role="button" tabindex="0">🌙</button>
-                <button class="control-btn" onclick="showNotifications()" title="الإشعارات" aria-label="الإشعارات" role="button" tabindex="0">
+                <button class="control-btn" onclick="toggleLang()" title="تغيير اللغة">🌐</button>
+                <button class="control-btn" onclick="toggleTheme()" title="تغيير المظهر">🌙</button>
+                <button class="control-btn" onclick="showNotifications()" title="الإشعارات">
                     🔔
                     <span class="notification-badge">5</span>
                 </button>
-                <button class="control-btn" onclick="showProfile()" title="الملف الشخصي" aria-label="الملف الشخصي" role="button" tabindex="0">👤</button>
+                <button class="control-btn" onclick="showProfile()" title="الملف الشخصي">👤</button>
             </div>
         </div>
     </header>
 
-    <main class="main" role="main" id="main-content">
+    <main class="main">
         <section id="dashboard" class="section active">
             <div class="hero">
                 <div class="hero-content">
@@ -327,42 +327,42 @@
             </div>
 
             <div class="kpi-grid">
-                <div class="kpi-card" onclick="showKPIDetails('sales')" role="button" tabindex="0" aria-label="عرض تفاصيل المؤشر">
+                <div class="kpi-card" onclick="showKPIDetails('sales')">
                     <div class="kpi-icon">💰</div>
                     <div class="kpi-value" id="sales">125,430</div>
                     <div class="kpi-label">إجمالي المبيعات اليوم</div>
                     <div class="kpi-trend positive">+12.5% ↗</div>
                     <div class="telemetry">LIVE</div>
                 </div>
-                <div class="kpi-card" onclick="showKPIDetails('vehicles')" role="button" tabindex="0" aria-label="عرض تفاصيل المؤشر">
+                <div class="kpi-card" onclick="showKPIDetails('vehicles')">
                     <div class="kpi-icon">🚛</div>
                     <div class="kpi-value" id="vehicles">24</div>
                     <div class="kpi-label">المركبات النشطة</div>
                     <div class="kpi-trend positive">+2 ↗</div>
                     <div class="telemetry">GPS</div>
                 </div>
-                <div class="kpi-card" onclick="showKPIDetails('customers')" role="button" tabindex="0" aria-label="عرض تفاصيل المؤشر">
+                <div class="kpi-card" onclick="showKPIDetails('customers')">
                     <div class="kpi-icon">👥</div>
                     <div class="kpi-value" id="customers">1,234</div>
                     <div class="kpi-label">العملاء النشطون</div>
                     <div class="kpi-trend positive">+5.2% ↗</div>
                     <div class="telemetry">AI</div>
                 </div>
-                <div class="kpi-card" onclick="showKPIDetails('orders')" role="button" tabindex="0" aria-label="عرض تفاصيل المؤشر">
+                <div class="kpi-card" onclick="showKPIDetails('orders')">
                     <div class="kpi-icon">📦</div>
                     <div class="kpi-value" id="orders">89</div>
                     <div class="kpi-label">الطلبات المكتملة</div>
                     <div class="kpi-trend positive">+8.1% ↗</div>
                     <div class="telemetry">SYNC</div>
                 </div>
-                <div class="kpi-card" onclick="showKPIDetails('products-count')" role="button" tabindex="0" aria-label="عرض تفاصيل المؤشر">
+                <div class="kpi-card" onclick="showKPIDetails('products-count')">
                     <div class="kpi-icon">🍬</div>
                     <div class="kpi-value" id="products-count">17</div>
                     <div class="kpi-label">المنتجات المتاحة</div>
                     <div class="kpi-trend positive">+15 ↗</div>
                     <div class="telemetry">DB</div>
                 </div>
-                <div class="kpi-card" onclick="showKPIDetails('collection')" role="button" tabindex="0" aria-label="عرض تفاصيل المؤشر">
+                <div class="kpi-card" onclick="showKPIDetails('collection')">
                     <div class="kpi-icon">💳</div>
                     <div class="kpi-value" id="collection">92.5%</div>
                     <div class="kpi-label">معدل التحصيل</div>
@@ -441,32 +441,32 @@
         <section id="analytics" class="section">
             <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--secondary); margin-bottom: 2rem;">📈 التحليلات والتقارير المتقدمة</h2>
             <div class="analytics-grid">
-                <div class="analytics-card" onclick="showAnalyticsDetail('sales')" role="button" tabindex="0" aria-label="عرض تفاصيل التحليلات">
+                <div class="analytics-card" onclick="showAnalyticsDetail('sales')">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
                     <h3>تحليل المبيعات</h3>
                     <p>تقارير مفصلة عن أداء المبيعات والاتجاهات مع التنبؤات الذكية</p>
                 </div>
-                <div class="analytics-card" onclick="showAnalyticsDetail('vehicles')" role="button" tabindex="0" aria-label="عرض تفاصيل التحليلات">
+                <div class="analytics-card" onclick="showAnalyticsDetail('vehicles')">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🚛</div>
                     <h3>أداء المركبات</h3>
                     <p>تتبع كفاءة التوصيل والمسارات المحسنة مع تحليل استهلاك الوقود</p>
                 </div>
-                <div class="analytics-card" onclick="showAnalyticsDetail('customers')" role="button" tabindex="0" aria-label="عرض تفاصيل التحليلات">
+                <div class="analytics-card" onclick="showAnalyticsDetail('customers')">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
                     <h3>رضا العملاء</h3>
                     <p>مؤشرات رضا العملاء وتحليل التغذية الراجعة مع توقع الاحتياجات</p>
                 </div>
-                <div class="analytics-card" onclick="showAnalyticsDetail('inventory')" role="button" tabindex="0" aria-label="عرض تفاصيل التحليلات">
+                <div class="analytics-card" onclick="showAnalyticsDetail('inventory')">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
                     <h3>إدارة المخزون</h3>
                     <p>تحليل مستويات المخزون والتنبؤ بالطلب مع التنبيهات الذكية</p>
                 </div>
-                <div class="analytics-card" onclick="showAnalyticsDetail('financial')" role="button" tabindex="0" aria-label="عرض تفاصيل التحليلات">
+                <div class="analytics-card" onclick="showAnalyticsDetail('financial')">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">💰</div>
                     <h3>التحليل المالي</h3>
                     <p>تقارير الربحية والتدفق النقدي مع توقعات النمو المستقبلي</p>
                 </div>
-                <div class="analytics-card" onclick="showAnalyticsDetail('ai')" role="button" tabindex="0" aria-label="عرض تفاصيل التحليلات">
+                <div class="analytics-card" onclick="showAnalyticsDetail('ai')">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🤖</div>
                     <h3>الذكاء الاصطناعي</h3>
                     <p>رؤى متقدمة مدعومة بالذكاء الاصطناعي لتحسين الأداء</p>
@@ -496,7 +496,7 @@
             </div>
         </section>
     </main>
-    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div id="modal" class="modal">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                 <h3 id="modal-title">تفاصيل</h3>
@@ -536,16 +536,6 @@
             }
 
             setupEventListeners() {
-                // Enhanced keyboard navigation
-                document.addEventListener("keydown", (e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                        const target = e.target;
-                        if (target.hasAttribute("onclick") && target.getAttribute("role") === "button") {
-                            e.preventDefault();
-                            target.click();
-                        }
-                    }
-                });
                 document.addEventListener('keydown', (e) => {
                     if (e.ctrlKey || e.metaKey) {
                         switch (e.key) {
@@ -658,7 +648,7 @@
                 }
 
                 productsGrid.innerHTML = products.map((product, index) => `
-                    <div class="product-card" onclick="showProductDetails('${product.id}')" role="button" tabindex="0" aria-label="عرض تفاصيل المنتج" style="--i: ${index};">
+                    <div class="product-card" onclick="showProductDetails('${product.id}')" style="--i: ${index};">
                         <div class="product-image">${this.getProductEmoji(product.category)}</div>
                         <div class="product-name">${product.name_ar}</div>
                         <div class="product-description">${product.name_en}</div>
