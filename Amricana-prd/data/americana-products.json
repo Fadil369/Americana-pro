@@ -1,72 +1,17 @@
-[
-  {
-    "name_ar": "كنافة بالجبن الطازجة",
-    "name_en": "Fresh Cheese Kunafa",
-    "description_ar": "كنافة طازجة محشوة بالجبن الطبيعي",
-    "description_en": "Fresh kunafa filled with natural cheese",
-    "image_url": "https://example.com/kunafa.jpg",
-    "price": 25.5,
-    "category": "حلويات مبردة",
-    "category_en": "Refrigerated Sweets",
-    "brand": "Americana",
-    "is_active": true,
-    "requires_refrigeration": true,
-    "sku": "AMR-KUN-001"
-  },
-  {
-    "name_ar": "مهلبية بالفستق",
-    "name_en": "Pistachio Muhallabia",
-    "description_ar": "مهلبية كريمية مزينة بالفستق الحلبي",
-    "description_en": "Creamy muhallabia topped with Aleppo pistachios",
-    "image_url": "https://example.com/muhallabia.jpg",
-    "price": 18.75,
-    "category": "حلويات مبردة",
-    "category_en": "Refrigerated Sweets",
-    "brand": "Americana",
-    "is_active": true,
-    "requires_refrigeration": true,
-    "sku": "AMR-MUH-001"
-  },
-  {
-    "name_ar": "أم علي بالمكسرات",
-    "name_en": "Om Ali with Mixed Nuts",
-    "description_ar": "أم علي تقليدية بالحليب والمكسرات المشكلة",
-    "description_en": "Traditional Om Ali with milk and mixed nuts",
-    "image_url": "https://example.com/omali.jpg",
-    "price": 22.0,
-    "category": "حلويات مبردة",
-    "category_en": "Refrigerated Sweets",
-    "brand": "Americana",
-    "is_active": true,
-    "requires_refrigeration": true,
-    "sku": "AMR-OMA-001"
-  },
-  {
-    "name_ar": "تشيز كيك بالتوت",
-    "name_en": "Berry Cheesecake",
-    "description_ar": "تشيز كيك كريمي بطبقة التوت الطازج",
-    "description_en": "Creamy cheesecake with fresh berry topping",
-    "image_url": "https://example.com/cheesecake.jpg",
-    "price": 35.0,
-    "category": "حلويات مبردة",
-    "category_en": "Refrigerated Sweets",
-    "brand": "Americana",
-    "is_active": true,
-    "requires_refrigeration": true,
-    "sku": "AMR-CHE-001"
-  },
-  {
-    "name_ar": "تيراميسو كلاسيك",
-    "name_en": "Classic Tiramisu",
-    "description_ar": "تيراميسو إيطالي أصيل بالقهوة والماسكاربوني",
-    "description_en": "Authentic Italian tiramisu with coffee and mascarpone",
-    "image_url": "https://example.com/tiramisu.jpg",
-    "price": 28.5,
-    "category": "حلويات مبردة",
-    "category_en": "Refrigerated Sweets",
-    "brand": "Americana",
-    "is_active": true,
-    "requires_refrigeration": true,
-    "sku": "AMR-TIR-001"
-  }
-]
+{
+  "products": [
+    {"sku": "AMR-PC-VAN-290", "name_ar": "كيك الفانيليا باوند", "name_en": "Vanilla Pound Cake", "description_ar": "كيك الفانيليا الطازج 290 جرام", "description_en": "Fresh Vanilla Pound Cake 290g", "category": "حلويات مبردة", "brand": "Americana", "price": 12.50, "cost": 8.75, "requires_refrigeration": true, "is_active": true, "stock_quantity": 100, "min_stock_level": 20},
+    {"sku": "AMR-PC-CHO-290", "name_ar": "كيك الشوكولاتة باوند", "name_en": "Chocolate Pound Cake", "description_ar": "كيك الشوكولاتة الطازج 290 جرام", "description_en": "Fresh Chocolate Pound Cake 290g", "category": "حلويات مبردة", "brand": "Americana", "price": 12.50, "cost": 8.75, "requires_refrigeration": true, "is_active": true, "stock_quantity": 100, "min_stock_level": 20},
+    {"sku": "AMR-PC-CHOC-290", "name_ar": "كيك باوند برقائق الشوكولاتة", "name_en": "Chocolate Chips Pound Cake", "description_ar": "كيك باوند برقائق الشوكولاتة 290 جرام", "description_en": "Chocolate Chips Pound Cake 290g", "category": "حلويات مبردة", "brand": "Americana", "price": 13.00, "cost": 9.10, "requires_refrigeration": true, "is_active": true, "stock_quantity": 100, "min_stock_level": 20},
+    {"sku": "AMR-PC-DCHOC-290", "name_ar": "كيك باوند برقائق الشوكولاتة المزدوجة", "name_en": "Double Chocolate Chips Pound Cake", "description_ar": "كيك باوند برقائق الشوكولاتة المزدوجة 290 جرام", "description_en": "Double Chocolate Chips Pound Cake 290g", "category": "حلويات مبردة", "brand": "Americana", "price": 13.50, "cost": 9.45, "requires_refrigeration": true, "is_active": true, "stock_quantity": 100, "min_stock_level": 20},
+    {"sku": "AMR-PC-ORA-290", "name_ar": "كيك البرتقال باوند", "name_en": "Orange Pound Cake", "description_ar": "كيك البرتقال الطازج 290 جرام", "description_en": "Fresh Orange Pound Cake 290g", "category": "حلويات مبردة", "brand": "Americana", "price": 12.50, "cost": 8.75, "requires_refrigeration": true, "is_active": true, "stock_quantity": 100, "min_stock_level": 20},
+    {"sku": "AMR-PC-MAR-290", "name_ar": "كيك الرخام باوند", "name_en": "Marble Pound Cake", "description_ar": "كيك الرخام الطازج 290 جرام", "description_en": "Fresh Marble Pound Cake 290g", "category": "حلويات مبردة", "brand": "Americana", "price": 12.50, "cost": 8.75, "requires_refrigeration": true, "is_active": true, "stock_quantity": 100, "min_stock_level": 20},
+    {"sku": "AMR-PC-ALM-290", "name_ar": "كيك اللوز والهيل باوند", "name_en": "Almond Cardamon Pound Cake", "description_ar": "كيك اللوز والهيل الطازج 290 جرام", "description_en": "Fresh Almond Cardamon Pound Cake 290g", "category": "حلويات مبردة", "brand": "Americana", "price": 14.00, "cost": 9.80, "requires_refrigeration": true, "is_active": true, "stock_quantity": 100, "min_stock_level": 20},
+    {"sku": "AMR-SR-VAN-20", "name_ar": "سويس رول الفانيليا", "name_en": "Vanilla Swiss Roll", "description_ar": "سويس رول الفانيليا بالكريمة 20 جرام", "description_en": "Vanilla Swiss Roll with Vanilla Cream 20g", "category": "حلويات مبردة", "brand": "Americana", "price": 2.50, "cost": 1.75, "requires_refrigeration": true, "is_active": true, "stock_quantity": 200, "min_stock_level": 50},
+    {"sku": "AMR-SR-VANSTR-20", "name_ar": "سويس رول الفانيليا بمربى الفراولة", "name_en": "Vanilla Swiss Roll with Strawberry Jam", "description_ar": "سويس رول الفانيليا بمربى الفراولة والكريمة 20 جرام", "description_en": "Vanilla Swiss Roll with Strawberry Jam & Vanilla Cream 20g", "category": "حلويات مبردة", "brand": "Americana", "price": 2.75, "cost": 1.93, "requires_refrigeration": true, "is_active": true, "stock_quantity": 200, "min_stock_level": 50},
+    {"sku": "AMR-SR-CHO-20", "name_ar": "سويس رول الشوكولاتة", "name_en": "Chocolate Swiss Roll", "description_ar": "سويس رول الشوكولاتة بالكريمة 20 جرام", "description_en": "Chocolate Swiss Roll with Vanilla Cream 20g", "category": "حلويات مبردة", "brand": "Americana", "price": 2.75, "cost": 1.93, "requires_refrigeration": true, "is_active": true, "stock_quantity": 200, "min_stock_level": 50},
+    {"sku": "AMR-SSR-VAN-60", "name_ar": "سوبر سويس رول الفانيليا", "name_en": "Super Swiss Roll Vanilla", "description_ar": "سوبر سويس رول الفانيليا بالكريمة 60 جرام", "description_en": "Super Swiss Roll Vanilla with Vanilla Cream 60g", "category": "حلويات مبردة", "brand": "Americana", "price": 5.50, "cost": 3.85, "requires_refrigeration": true, "is_active": true, "stock_quantity": 150, "min_stock_level": 30},
+    {"sku": "AMR-SSR-VANSTR-60", "name_ar": "سوبر سويس رول الفانيليا بمربى الفراولة", "name_en": "Super Swiss Roll with Strawberry Jam", "description_ar": "سوبر سويس رول الفانيليا بمربى الفراولة والكريمة 60 جرام", "description_en": "Super Swiss Roll with Strawberry Jam & Vanilla Cream 60g", "category": "حلويات مبردة", "brand": "Americana", "price": 6.00, "cost": 4.20, "requires_refrigeration": true, "is_active": true, "stock_quantity": 150, "min_stock_level": 30},
+    {"sku": "AMR-SRL-VAN-110", "name_ar": "سويس رول الفانيليا الكبير", "name_en": "Large Vanilla Swiss Roll", "description_ar": "سويس رول الفانيليا الكبير بالكريمة 110 جرام", "description_en": "Large Vanilla Swiss Roll with Vanilla Cream 110g", "category": "حلويات مبردة", "brand": "Americana", "price": 8.50, "cost": 5.95, "requires_refrigeration": true, "is_active": true, "stock_quantity": 100, "min_stock_level": 20}
+  ]
+}

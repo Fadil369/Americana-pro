@@ -11,6 +11,7 @@ import { productsHandler } from './handlers/products';
 import { outletsHandler } from './handlers/outlets';
 import { ordersHandler } from './handlers/orders';
 import { analyticsHandler } from './handlers/analytics';
+import { bulkImportHandler } from './handlers/bulk-import';
 import { corsHeaders } from './utils/cors';
 
 const router = Router();
@@ -22,6 +23,7 @@ router.options('*', () => new Response(null, { headers: corsHeaders }));
 router.get('/api/products', productsHandler);
 router.get('/api/products/:id', productsHandler);
 router.post('/api/products', productsHandler);
+router.post('/api/products/bulk', bulkImportHandler);
 
 router.get('/api/outlets', outletsHandler);
 router.post('/api/outlets/register', outletsHandler);
