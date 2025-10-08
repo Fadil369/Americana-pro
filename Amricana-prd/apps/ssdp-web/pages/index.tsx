@@ -204,6 +204,43 @@ export default function Dashboard() {
                     ))}
                   </div>
                 </motion.div>
+
+                {/* BRAINSAIT: Analytics & Roadmap CTA */}
+                <motion.a
+                  href="/analytics"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                  className="glass rounded-xl p-6 block hover:shadow-lg transition-all duration-300 group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-brand-blue/10 flex items-center justify-center group-hover:bg-brand-blue/20 transition-colors">
+                        <svg className="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-1">
+                          {locale === 'ar' ? 'خارطة الطريق ومؤشرات الأداء' : 'Roadmap & KPI Tracking'}
+                        </h3>
+                        <p className="text-gray-600 text-sm">
+                          {locale === 'ar' 
+                            ? 'تابع التقدم المحرز ومؤشرات الأداء الرئيسية لمنصة توزيع الحلويات الذكية' 
+                            : 'Track implementation progress and key performance indicators'}
+                        </p>
+                      </div>
+                    </div>
+                    <svg 
+                      className={`w-6 h-6 text-gray-400 group-hover:text-brand-blue transition-colors ${isRTL ? 'rotate-180' : ''}`}
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </motion.a>
               </motion.div>
             )}
           </div>
