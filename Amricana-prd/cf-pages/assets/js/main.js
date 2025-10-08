@@ -3,7 +3,7 @@
 
 class SSDP {
     constructor() {
-        this.apiBase = 'https://ssdp-api.brainsait.workers.dev/api';
+        this.apiBase = 'https://ssdp-api.dr-mf-12298.workers.dev/api';
         this.currentLang = 'ar';
         this.currentTheme = 'light';
         this.cache = new Map();
@@ -65,18 +65,31 @@ class SSDP {
     // Data Loading
     async loadInitialData() {
         try {
-            const [dashboardData, products, outlets] = await Promise.all([
+            const [dashboardData, productsData, outletsData] = await Promise.all([
                 this.apiCall('/analytics/dashboard'),
                 this.apiCall('/products'),
                 this.apiCall('/outlets')
             ]);
 
-            this.updateDashboardStats(dashboardData);
-            this.renderProducts(products.products || []);
-            this.renderOutlets(outlets.outlets || []);
+            if (dashboardData.success) {
+                this.updateDashboardStats(dashboardData.data);
+            }
+            if (productsData.success) {
+                this.renderProducts(productsData.products || []);
+            }
+            if (outletsData.success) {
+                this.renderOutlets(outletsData.outlets || []);
+            }
             
         } catch (error) {
             console.error('Failed to load initial data:', error);
+            // Show fallback data
+            this.updateDashboardStats({
+                total_sales_today: 0,
+                active_vehicles: 0,
+                active_customers: 0,
+                completed_orders: 0
+            });
         }
     }
 
@@ -211,20 +224,41 @@ class SSDP {
             });
         });
 
-        // Search and filters
-        const productSearch = document.getElementById('product-search');
-        if (productSearch) {
-            productSearch.addEventListener('input', this.debounce((e) => {
-                this.filterProducts(e.target.value);
-            }, 300));
+    // Product filtering
+    async filterProducts(searchQuery = null, category = null) {
+        try {
+            let url = '/products';
+            const params = new URLSearchParams();
+            
+            if (category && category !== 'all') {
+                params.append('category', category);
+            }
+            
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+            
+            const response = await this.apiCall(url);
+            if (response.success) {
+                let products = response.products;
+                
+                // Client-side search filtering
+                if (searchQuery) {
+                    const query = searchQuery.toLowerCase();
+                    products = products.filter(product => {
+                        const name = this.currentLang === 'ar' ? product.name_ar : product.name_en;
+                        const description = this.currentLang === 'ar' ? product.description_ar : product.description_en;
+                        return name.toLowerCase().includes(query) || 
+                               description.toLowerCase().includes(query);
+                    });
+                }
+                
+                this.renderProducts(products);
+            }
+        } catch (error) {
+            console.error('Failed to filter products:', error);
         }
-
-        const categoryFilter = document.getElementById('category-filter');
-        if (categoryFilter) {
-            categoryFilter.addEventListener('change', (e) => {
-                this.filterProducts(null, e.target.value);
-            });
-        }
+    }
 
         // Forms
         const productForm = document.getElementById('product-form');
@@ -272,18 +306,47 @@ class SSDP {
         if (targetSection) {
             targetSection.classList.add('active');
             
-            // Load section-specific data
-            switch (sectionId) {
-                case 'products':
-                    this.loadProducts();
-                    break;
-                case 'outlets':
-                    this.loadOutlets();
-                    break;
-                case 'analytics':
-                    this.loadAnalytics();
-                    break;
+    // Load section-specific data
+    async loadProducts() {
+        try {
+            this.showLoading(true);
+            const response = await this.apiCall('/products');
+            if (response.success) {
+                this.renderProducts(response.products);
             }
+        } catch (error) {
+            console.error('Failed to load products:', error);
+            this.showNotification('فشل في تحميل المنتجات', 'error');
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    async loadOutlets() {
+        try {
+            this.showLoading(true);
+            const response = await this.apiCall('/outlets');
+            if (response.success) {
+                this.renderOutlets(response.outlets);
+            }
+        } catch (error) {
+            console.error('Failed to load outlets:', error);
+            this.showNotification('فشل في تحميل المنافذ', 'error');
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    async loadAnalytics() {
+        try {
+            const response = await this.apiCall('/analytics/dashboard');
+            if (response.success) {
+                this.updateDashboardStats(response.data);
+            }
+        } catch (error) {
+            console.error('Failed to load analytics:', error);
+        }
+    }
         }
     }
 
@@ -435,6 +498,25 @@ class SSDP {
         return icons[type] || icons.info;
     }
 
+    viewOutletOnMap(outletId) {
+        // Switch to outlets section and highlight outlet
+        this.showSection('outlets');
+        // In a real implementation, you'd center the map on the outlet
+        this.showNotification('عرض المنفذ على الخريطة', 'info');
+    }
+
+    createOrder(outletId) {
+        // Navigate to order creation
+        this.showNotification('إنشاء طلب جديد للمنفذ', 'info');
+        // In a real implementation, you'd open order creation modal
+    }
+
+    openOutletModal() {
+        // Open outlet registration modal
+        this.showNotification('تسجيل منفذ جديد', 'info');
+        // In a real implementation, you'd show outlet registration form
+    }
+
     showLoading(show) {
         const loader = document.getElementById('loading-screen');
         if (loader) {
@@ -503,8 +585,12 @@ const ssdp = new SSDP();
 window.toggleTheme = () => ssdp.toggleTheme();
 window.toggleLanguage = () => ssdp.toggleLanguage();
 window.openProductModal = () => ssdp.openProductModal();
+window.openOutletModal = () => ssdp.openOutletModal();
 window.closeModal = (id) => ssdp.closeModal(id);
 window.toggleNav = () => {
     const menu = document.getElementById('nav-menu');
     menu.classList.toggle('active');
 };
+
+// Make ssdp methods available globally for onclick handlers
+window.ssdp = ssdp;
