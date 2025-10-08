@@ -7,148 +7,116 @@ interface StatsCardsProps {
   isRTL?: boolean
 }
 
-export default function StatsCards({ data, locale, isRTL }: StatsCardsProps) {
-  const t = {
-    ar: {
-      totalSales: 'إجمالي المبيعات اليوم',
-      activeVehicles: 'المركبات النشطة',
-      activeCustomers: 'العملاء النشطون',
-      completedOrders: 'الطلبات المكتملة',
-      currency: 'ريال',
-      increase: 'زيادة',
-      decrease: 'انخفاض'
-    },
-    en: {
-      totalSales: 'Total Sales Today',
-      activeVehicles: 'Active Vehicles',
-      activeCustomers: 'Active Customers',
-      completedOrders: 'Completed Orders',
-      currency: 'SAR',
-      increase: 'increase',
-      decrease: 'decrease'
-    }
+const textMap = {
+  ar: {
+    totalSales: 'إجمالي المبيعات اليوم',
+    activeVehicles: 'المركبات النشطة',
+    activeCustomers: 'العملاء النشطون',
+    completedOrders: 'الطلبات المكتملة',
+    change: 'التغير',
+    baseline: 'الأساس'
+  },
+  en: {
+    totalSales: 'Total Sales Today',
+    activeVehicles: 'Active Vehicles',
+    activeCustomers: 'Active Customers',
+    completedOrders: 'Completed Orders',
+    change: 'Change',
+    baseline: 'Baseline'
   }
+}
 
-  const text = t[locale as keyof typeof t] || t.ar
+const formatCurrency = (amount: number, locale?: string) =>
+  new Intl.NumberFormat(locale === 'ar' ? 'ar-SA' : 'en-US', {
+    style: 'currency',
+    currency: 'SAR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(amount)
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat(locale === 'ar' ? 'ar-SA' : 'en-US', {
-      style: 'currency',
-      currency: 'SAR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount)
-  }
+const formatNumber = (value: number, locale?: string) =>
+  new Intl.NumberFormat(locale === 'ar' ? 'ar-SA' : 'en-US').format(value)
 
-  const formatNumber = (num: number) => {
-    return new Intl.NumberFormat(locale === 'ar' ? 'ar-SA' : 'en-US').format(num)
-  }
+export default function StatsCards({ data, locale }: StatsCardsProps) {
+  const dictionary = textMap[(locale as keyof typeof textMap) || 'ar']
 
   const stats = [
     {
-      title: text.totalSales,
-      value: formatCurrency(data.total_sales_today || 0),
-      change: '+12.5%',
-      trend: 'up',
+      key: 'total_sales_today',
+      label: dictionary.totalSales,
+      value: formatCurrency(data.total_sales_today ?? 0, locale),
+      delta: '+12.5%',
+      trend: 'up' as const,
       icon: DollarSign,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
-      borderColor: 'border-green-200'
+      accent: 'from-brand-orange/80 to-brand-orange/30',
+      halo: 'bg-brand-orange/20'
     },
     {
-      title: text.activeVehicles,
-      value: formatNumber(data.active_vehicles || 0),
-      change: '+2',
-      trend: 'up',
+      key: 'active_vehicles',
+      label: dictionary.activeVehicles,
+      value: formatNumber(data.active_vehicles ?? 0, locale),
+      delta: '+2',
+      trend: 'up' as const,
       icon: Truck,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200'
+      accent: 'from-accent-blue/80 to-accent-blue/20',
+      halo: 'bg-accent-blue/15'
     },
     {
-      title: text.activeCustomers,
-      value: formatNumber(data.active_customers || 0),
-      change: '+5.2%',
-      trend: 'up',
+      key: 'active_customers',
+      label: dictionary.activeCustomers,
+      value: formatNumber(data.active_customers ?? 0, locale),
+      delta: '+5.2%',
+      trend: 'up' as const,
       icon: Users,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50',
-      borderColor: 'border-purple-200'
+      accent: 'from-accent-teal/80 to-accent-teal/20',
+      halo: 'bg-accent-teal/15'
     },
     {
-      title: text.completedOrders,
-      value: formatNumber(data.completed_orders || 0),
-      change: '+8.1%',
-      trend: 'up',
+      key: 'completed_orders',
+      label: dictionary.completedOrders,
+      value: formatNumber(data.completed_orders ?? 0, locale),
+      delta: '-1.4%',
+      trend: 'down' as const,
       icon: Package,
-      color: 'text-primary-600',
-      bgColor: 'bg-primary-50',
-      borderColor: 'border-primary-200'
+      accent: 'from-amber-500/80 to-amber-500/20',
+      halo: 'bg-amber-400/15'
     }
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {stats.map((stat, index) => (
         <motion.div
-          key={stat.title}
-          initial={{ opacity: 0, y: 20 }}
+          key={stat.key}
+          initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.1 }}
-          whileHover={{ y: -5, scale: 1.02 }}
-          className={`glass rounded-xl p-6 border ${stat.borderColor} hover:shadow-lg transition-all duration-300`}
+          transition={{ delay: index * 0.08 }}
+          whileHover={{ y: -6 }}
+          className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 text-white shadow-card backdrop-blur-xl"
         >
-          <div className="flex items-center justify-between mb-4">
-            <div className={`p-3 rounded-lg ${stat.bgColor}`}>
-              <stat.icon className={`w-6 h-6 ${stat.color}`} />
+          <div className={`absolute -right-10 top-0 h-32 w-32 rounded-full blur-3xl ${stat.halo}`} />
+
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.28em] text-white/40">{dictionary.change}</p>
+              <h3 className="mt-2 text-2xl font-semibold text-white">{stat.value}</h3>
+              <p className="text-sm text-white/60">{stat.label}</p>
             </div>
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.5 + index * 0.1, type: 'spring' }}
-              className={`flex items-center space-x-1 rtl:space-x-reverse text-sm font-medium ${
-                stat.trend === 'up' ? 'text-green-600' : 'text-red-600'
-              }`}
-            >
-              {stat.trend === 'up' ? (
-                <TrendingUp className="w-4 h-4" />
-              ) : (
-                <TrendingDown className="w-4 h-4" />
-              )}
-              <span>{stat.change}</span>
-            </motion.div>
+
+            <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${stat.accent}`}>
+              <stat.icon className="h-5 w-5" />
+            </div>
           </div>
 
-          <div>
-            <motion.h3
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 + index * 0.1 }}
-              className="text-2xl font-bold text-gray-800 mb-1 font-cairo"
+          <div className="mt-6 flex items-center justify-between text-xs uppercase tracking-wide text-white/60">
+            <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold ${
+              stat.trend === 'up' ? 'bg-emerald-500/15 text-emerald-300' : 'bg-rose-500/15 text-rose-300'
+            }`}
             >
-              {stat.value}
-            </motion.h3>
-            <p className="text-sm text-gray-600">{stat.title}</p>
-          </div>
-
-          {/* Animated Progress Bar */}
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: '100%' }}
-            transition={{ delay: 0.7 + index * 0.1, duration: 1 }}
-            className="mt-4 h-1 bg-gray-200 rounded-full overflow-hidden"
-          >
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${Math.random() * 40 + 60}%` }}
-              transition={{ delay: 1 + index * 0.1, duration: 1 }}
-              className={`h-full ${stat.color.replace('text-', 'bg-')} rounded-full`}
-            />
-          </motion.div>
-
-          {/* Saudi Pattern Decoration */}
-          <div className="absolute top-0 right-0 w-16 h-16 opacity-5 overflow-hidden">
-            <div className="w-full h-full bg-saudi-gradient transform rotate-45 translate-x-8 -translate-y-8" />
+              {stat.trend === 'up' ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
+              {stat.delta}
+            </div>
+            <span className="text-white/40">{dictionary.baseline}</span>
           </div>
         </motion.div>
       ))}

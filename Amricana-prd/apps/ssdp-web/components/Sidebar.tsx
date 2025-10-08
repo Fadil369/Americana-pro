@@ -1,15 +1,16 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Home, 
-  Package, 
-  Store, 
-  Truck, 
-  BarChart3, 
-  Users, 
+import {
+  Home,
+  Package,
+  Store,
+  Truck,
+  BarChart3,
+  Users,
   Settings,
   FileText,
   MapPin,
-  CreditCard
+  CreditCard,
+  Sparkles
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -19,166 +20,173 @@ interface SidebarProps {
   isRTL?: boolean
 }
 
-export default function Sidebar({ open, onClose, locale, isRTL }: SidebarProps) {
-  const t = {
-    ar: {
-      dashboard: 'لوحة التحكم',
-      products: 'المنتجات',
-      outlets: 'المنافذ',
-      orders: 'الطلبات',
-      deliveries: 'التوصيل',
-      analytics: 'التحليلات',
-      users: 'المستخدمون',
-      reports: 'التقارير',
-      map: 'الخريطة',
-      payments: 'المدفوعات',
-      settings: 'الإعدادات',
-      vision2030: 'رؤية المملكة 2030',
-      digitalTransformation: 'التحول الرقمي'
-    },
-    en: {
-      dashboard: 'Dashboard',
-      products: 'Products',
-      outlets: 'Outlets',
-      orders: 'Orders',
-      deliveries: 'Deliveries',
-      analytics: 'Analytics',
-      users: 'Users',
-      reports: 'Reports',
-      map: 'Map',
-      payments: 'Payments',
-      settings: 'Settings',
-      vision2030: 'Saudi Vision 2030',
-      digitalTransformation: 'Digital Transformation'
-    }
+const labels = {
+  ar: {
+    dashboard: 'لوحة القيادة',
+    products: 'المنتجات',
+    outlets: 'المنافذ',
+    orders: 'الطلبات',
+    deliveries: 'الأسطول',
+    analytics: 'التحليلات',
+    users: 'الهوية الرقمية',
+    reports: 'التقارير',
+    map: 'الخريطة المباشرة',
+    payments: 'المدفوعات',
+    settings: 'الإعدادات',
+    academy: 'أكاديمية BrainSAIT',
+    quickStats: 'مؤشرات دقيقة',
+    madeIn: 'صُنع في المملكة العربية السعودية',
+    inc: 'BrainSAIT © 2025'
+  },
+  en: {
+    dashboard: 'Command Hub',
+    products: 'Product Catalog',
+    outlets: 'Outlet Network',
+    orders: 'Order Flow',
+    deliveries: 'Fleet Ops',
+    analytics: 'Analytics',
+    users: 'Digital Identity',
+    reports: 'Reports',
+    map: 'Live Map',
+    payments: 'Payments',
+    settings: 'Settings',
+    academy: 'BrainSAIT Academy',
+    quickStats: 'Quick Signals',
+    madeIn: 'Made in Saudi Arabia',
+    inc: 'BrainSAIT © 2025'
   }
+}
 
-  const text = t[locale as keyof typeof t] || t.ar
+export default function Sidebar({ open, onClose, locale, isRTL }: SidebarProps) {
+  const dictionary = labels[(locale as keyof typeof labels) || 'ar']
 
   const menuItems = [
-    { icon: Home, label: text.dashboard, href: '/', active: true },
-    { icon: Package, label: text.products, href: '/products' },
-    { icon: Store, label: text.outlets, href: '/outlets' },
-    { icon: FileText, label: text.orders, href: '/orders' },
-    { icon: Truck, label: text.deliveries, href: '/deliveries' },
-    { icon: MapPin, label: text.map, href: '/map' },
-    { icon: BarChart3, label: text.analytics, href: '/analytics' },
-    { icon: CreditCard, label: text.payments, href: '/payments' },
-    { icon: Users, label: text.users, href: '/users' },
-    { icon: FileText, label: text.reports, href: '/reports' },
-    { icon: Settings, label: text.settings, href: '/settings' },
+    { icon: Home, label: dictionary.dashboard, href: '/', badge: 'Live', active: true },
+    { icon: Package, label: dictionary.products, href: '/products' },
+    { icon: Store, label: dictionary.outlets, href: '/outlets' },
+    { icon: FileText, label: dictionary.orders, href: '/orders' },
+    { icon: Truck, label: dictionary.deliveries, href: '/deliveries' },
+    { icon: MapPin, label: dictionary.map, href: '/map' },
+    { icon: BarChart3, label: dictionary.analytics, href: '/analytics' },
+    { icon: CreditCard, label: dictionary.payments, href: '/payments' },
+    { icon: Users, label: dictionary.users, href: '/users' },
+    { icon: Settings, label: dictionary.settings, href: '/settings' }
   ]
+
+  const stats = [
+    { label: locale === 'ar' ? 'المنافذ النشطة' : 'Active Outlets', value: '1,284', tone: 'text-accent-teal' },
+    { label: locale === 'ar' ? 'الطلبات اليوم' : 'Orders Today', value: '96', tone: 'text-brand-orange' },
+    { label: locale === 'ar' ? 'متوسط زمن التوصيل' : 'Avg Delivery', value: '27m', tone: 'text-accent-blue' }
+  ]
+
+  const sidebarContent = (
+    <div className="flex h-full flex-col gap-6 overflow-y-auto px-6 py-8">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-3xl border border-white/10 bg-brand-navySoft/60 p-5 text-white shadow-card"
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-orange/20 text-2xl">
+            🇸🇦
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-[0.28em] text-white/60">2030</p>
+            <h2 className="font-display text-lg font-semibold text-white">Vision Impact</h2>
+          </div>
+        </div>
+        <p className="mt-4 text-sm text-white/70">
+          {locale === 'ar'
+            ? 'رحلة التحول الرقمي لقطاع التوزيع في المملكة العربية السعودية.'
+            : 'Digital transformation for Saudi distribution supply chains.'}
+        </p>
+        <button className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-brand-orange/40 bg-brand-orange/15 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-brand-orange transition hover:bg-brand-orange/20">
+          <Sparkles className="h-4 w-4" />
+          {dictionary.academy}
+        </button>
+      </motion.div>
+
+      <nav className="space-y-2">
+        {menuItems.map((item, index) => (
+          <motion.a
+            key={item.href}
+            href={item.href}
+            initial={{ opacity: 0, x: isRTL ? 16 : -16 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.05 * index }}
+            className={`group relative flex items-center justify-between gap-3 rounded-2xl border border-white/5 px-4 py-3 text-sm font-medium text-white/70 transition-all hover:border-white/15 hover:bg-white/10 hover:text-white ${
+              item.active ? 'border-brand-orange/40 bg-brand-orange/15 text-white shadow-card' : ''
+            }`}
+          >
+            <span className="flex items-center gap-3">
+              <item.icon className={`h-4 w-4 ${item.active ? 'text-brand-orange' : 'text-white/60 group-hover:text-brand-orange'}`} />
+              {item.label}
+            </span>
+            {item.badge && (
+              <span className="rounded-full bg-brand-orange/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-brand-orange">
+                {item.badge}
+              </span>
+            )}
+          </motion.a>
+        ))}
+      </nav>
+
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-3xl border border-white/5 bg-white/5 p-5 text-white/80"
+      >
+        <h4 className="text-xs uppercase tracking-[0.28em] text-white/50">{dictionary.quickStats}</h4>
+        <div className="mt-4 space-y-3">
+          {stats.map(stat => (
+            <div key={stat.label} className="flex items-center justify-between text-sm">
+              <span>{stat.label}</span>
+              <span className={`font-semibold ${stat.tone}`}>{stat.value}</span>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      <div className="mt-auto space-y-2 text-center text-xs text-white/40">
+        <p>{dictionary.madeIn}</p>
+        <p>{dictionary.inc}</p>
+      </div>
+    </div>
+  )
 
   return (
     <>
-      {/* Overlay */}
       <AnimatePresence>
         {open && (
           <motion.div
+            key="sidebar-overlay"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: 0.75 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-md lg:hidden"
           />
         )}
       </AnimatePresence>
 
-      {/* Sidebar */}
       <AnimatePresence>
         {open && (
           <motion.aside
-            initial={{ x: isRTL ? 256 : -256 }}
+            key="sidebar-mobile"
+            initial={{ x: isRTL ? 320 : -320 }}
             animate={{ x: 0 }}
-            exit={{ x: isRTL ? 256 : -256 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className={`fixed top-16 ${isRTL ? 'right-0' : 'left-0'} bottom-0 w-64 glass border-r border-white/20 z-50 overflow-y-auto`}
+            exit={{ x: isRTL ? 320 : -320 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 28 }}
+            className={`fixed top-[120px] ${isRTL ? 'right-0' : 'left-0'} z-50 h-[calc(100vh-120px)] w-72 overflow-hidden rounded-3xl border border-white/10 bg-brand-navy/95 shadow-glow lg:hidden`}
           >
-            <div className="p-6">
-              {/* Vision 2030 Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="mb-6 p-4 bg-gradient-to-r from-green-500 via-primary-500 to-secondary-900 rounded-xl text-white text-center"
-              >
-                <div className="text-2xl mb-2">🇸🇦</div>
-                <div className="text-sm font-semibold">{text.vision2030}</div>
-                <div className="text-xs opacity-80 mt-1">{text.digitalTransformation}</div>
-              </motion.div>
-
-              {/* Navigation Menu */}
-              <nav className="space-y-2">
-                {menuItems.map((item, index) => (
-                  <motion.a
-                    key={item.href}
-                    href={item.href}
-                    initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 + index * 0.05 }}
-                    className={`flex items-center space-x-3 rtl:space-x-reverse px-4 py-3 rounded-xl transition-all group ${
-                      item.active 
-                        ? 'bg-primary-500 text-white shadow-lg' 
-                        : 'text-gray-700 hover:bg-white/20 hover:text-primary-600'
-                    }`}
-                  >
-                    <item.icon className={`w-5 h-5 ${item.active ? 'text-white' : 'text-gray-500 group-hover:text-primary-500'}`} />
-                    <span className="font-medium">{item.label}</span>
-                    
-                    {item.active && (
-                      <motion.div
-                        layoutId="activeIndicator"
-                        className={`absolute ${isRTL ? 'left-0' : 'right-0'} top-1/2 transform -translate-y-1/2 w-1 h-8 bg-white rounded-full`}
-                      />
-                    )}
-                  </motion.a>
-                ))}
-              </nav>
-
-              {/* Stats Summary */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="mt-8 p-4 bg-white/10 rounded-xl"
-              >
-                <h4 className="text-sm font-semibold text-gray-700 mb-3">
-                  {locale === 'ar' ? 'إحصائيات سريعة' : 'Quick Stats'}
-                </h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">{locale === 'ar' ? 'المنافذ النشطة' : 'Active Outlets'}</span>
-                    <span className="font-semibold text-primary-600">1,234</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">{locale === 'ar' ? 'الطلبات اليوم' : 'Orders Today'}</span>
-                    <span className="font-semibold text-green-600">89</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">{locale === 'ar' ? 'المركبات' : 'Vehicles'}</span>
-                    <span className="font-semibold text-blue-600">24</span>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Saudi Branding */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.7 }}
-                className="mt-8 text-center"
-              >
-                <div className="text-xs text-gray-500 mb-2">
-                  {locale === 'ar' ? 'صُنع بـ ❤️ في المملكة العربية السعودية' : 'Made with ❤️ in Saudi Arabia'}
-                </div>
-                <div className="text-xs text-gray-400">
-                  BrainSAIT © 2024
-                </div>
-              </motion.div>
-            </div>
+            {sidebarContent}
           </motion.aside>
         )}
       </AnimatePresence>
+
+      <aside className={`noscroll pointer-events-none hidden h-[calc(100vh-120px)] w-72 shrink-0 overflow-hidden rounded-3xl border border-white/10 bg-brand-navy/85 shadow-card lg:pointer-events-auto lg:block ${isRTL ? 'ml-6' : 'mr-6'}`}>
+        {sidebarContent}
+      </aside>
     </>
   )
 }

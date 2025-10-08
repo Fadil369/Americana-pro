@@ -1,178 +1,148 @@
 import { motion } from 'framer-motion'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts'
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 interface SalesChartProps {
-  data: any[]
+  data: Array<{ date: string; amount: number }>
   locale?: string
   isRTL?: boolean
 }
 
-export default function SalesChart({ data, locale, isRTL }: SalesChartProps) {
-  const t = {
-    ar: {
-      title: 'اتجاه المبيعات',
-      subtitle: 'المبيعات اليومية خلال الأسبوع الماضي',
-      amount: 'المبلغ',
-      date: 'التاريخ',
-      currency: 'ريال'
-    },
-    en: {
-      title: 'Sales Trend',
-      subtitle: 'Daily sales over the past week',
-      amount: 'Amount',
-      date: 'Date',
-      currency: 'SAR'
-    }
+const copy = {
+  ar: {
+    title: 'اتجاه المبيعات',
+    subtitle: 'إشارات المبيعات الأسبوعية لحظة بلحظة',
+    highest: 'أعلى قيمة',
+    average: 'المتوسط',
+    growth: 'النمو',
+    empty: 'لا تتوفر بيانات كافية لعرض الرسم البياني'
+  },
+  en: {
+    title: 'Sales Momentum',
+    subtitle: 'Week-over-week sales signals in real time',
+    highest: 'Peak Value',
+    average: 'Average',
+    growth: 'Growth',
+    empty: 'Not enough data to render the chart yet'
   }
+}
 
-  const text = t[locale as keyof typeof t] || t.ar
+export default function SalesChart({ data = [], locale, isRTL }: SalesChartProps) {
+  const dictionary = copy[(locale as keyof typeof copy) || 'ar']
 
-  // Format data for chart
-  const chartData = data?.map((item, index) => ({
-    date: new Date(item.date).toLocaleDateString(locale === 'ar' ? 'ar-SA' : 'en-US', { 
-      month: 'short', 
-      day: 'numeric' 
+  const chartData = data.map(entry => ({
+    date: new Date(entry.date).toLocaleDateString(locale === 'ar' ? 'ar-SA' : 'en-US', {
+      month: 'short',
+      day: 'numeric'
     }),
-    amount: item.amount,
-    index
-  })) || []
+    amount: entry.amount
+  }))
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat(locale === 'ar' ? 'ar-SA' : 'en-US', {
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat(locale === 'ar' ? 'ar-SA' : 'en-US', {
       style: 'currency',
       currency: 'SAR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(value)
-  }
+
+  const highestValue = chartData.length ? Math.max(...chartData.map(point => point.amount)) : 0
+  const averageValue = chartData.length
+    ? chartData.reduce((sum, point) => sum + point.amount, 0) / chartData.length
+    : 0
 
   const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="glass rounded-lg p-3 border border-white/20 shadow-lg"
-        >
-          <p className="text-sm font-medium text-gray-800 mb-1">{label}</p>
-          <p className="text-lg font-bold text-primary-600">
-            {formatCurrency(payload[0].value)}
-          </p>
-        </motion.div>
-      )
-    }
-    return null
+    if (!active || !payload?.length) return null
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-2xl border border-white/10 bg-brand-navy/95 px-4 py-3 text-sm text-white shadow-lg"
+      >
+        <p className="font-semibold text-white">{label}</p>
+        <p className="text-white/60">{formatCurrency(payload[0].value)}</p>
+      </motion.div>
+    )
   }
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass rounded-xl p-6 h-96"
+      className="relative h-[420px] overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 text-white shadow-card backdrop-blur-xl"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <motion.h3
-            initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl font-semibold text-gray-800 font-cairo"
-          >
-            {text.title}
-          </motion.h3>
-          <motion.p
-            initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-sm text-gray-600 mt-1"
-          >
-            {text.subtitle}
-          </motion.p>
-        </div>
+      <div className="absolute left-0 top-0 h-full w-full bg-brand-sheen" />
+      <div className="absolute -right-24 -top-24 h-48 w-48 rounded-full bg-brand-orange/20 blur-3xl" />
 
-        {/* Chart Type Toggle */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 }}
-          className="flex bg-gray-100 rounded-lg p-1"
+      <div className="relative flex flex-col gap-2 pb-6">
+        <motion.h3
+          initial={{ opacity: 0, x: isRTL ? 12 : -12 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="text-xl font-semibold"
         >
-          <button className="px-3 py-1 text-xs font-medium bg-white text-primary-600 rounded-md shadow-sm">
-            📈 {locale === 'ar' ? 'خطي' : 'Line'}
-          </button>
-          <button className="px-3 py-1 text-xs font-medium text-gray-600 hover:text-primary-600">
-            📊 {locale === 'ar' ? 'عمودي' : 'Bar'}
-          </button>
-        </motion.div>
+          {dictionary.title}
+        </motion.h3>
+        <p className="text-sm text-white/60">{dictionary.subtitle}</p>
       </div>
 
-      {/* Chart */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.4 }}
-        className="h-64"
-      >
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-            <defs>
-              <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#ea580c" stopOpacity={0.3}/>
-                <stop offset="95%" stopColor="#ea580c" stopOpacity={0}/>
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-            <XAxis 
-              dataKey="date" 
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 12, fill: '#666' }}
-            />
-            <YAxis 
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 12, fill: '#666' }}
-              tickFormatter={(value) => `${(value / 1000).toFixed(0)}K`}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Area
-              type="monotone"
-              dataKey="amount"
-              stroke="#ea580c"
-              strokeWidth={3}
-              fill="url(#salesGradient)"
-              dot={{ fill: '#ea580c', strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, stroke: '#ea580c', strokeWidth: 2, fill: '#fff' }}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </motion.div>
+      <div className="relative h-64">
+        {chartData.length ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData} margin={{ left: isRTL ? 0 : 8, right: isRTL ? 8 : 0, top: 10, bottom: 0 }}>
+              <defs>
+                <linearGradient id="salesMomentum" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#f4511e" stopOpacity={0.55} />
+                  <stop offset="95%" stopColor="#f4511e" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="4 6" stroke="rgba(255,255,255,0.08)" vertical={false} />
+              <XAxis
+                dataKey="date"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: 'rgba(255,255,255,0.55)', fontSize: 12 }}
+                tickMargin={10}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: 'rgba(255,255,255,0.55)', fontSize: 12 }}
+                tickFormatter={value => `${(value / 1000).toFixed(0)}K`}
+                width={64}
+              />
+              <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 1 }} />
+              <Area
+                type="monotone"
+                dataKey="amount"
+                stroke="#f4511e"
+                strokeWidth={3}
+                fill="url(#salesMomentum)"
+                dot={{ r: 4, strokeWidth: 2, stroke: '#f4511e', fill: '#010409' }}
+                activeDot={{ r: 6, strokeWidth: 0, fill: '#f4511e' }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-dashed border-white/10 bg-white/5 text-center text-sm text-white/50">
+            {dictionary.empty}
+          </div>
+        )}
+      </div>
 
-      {/* Summary Stats */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200"
-      >
-        <div className="text-center">
-          <p className="text-xs text-gray-500">{locale === 'ar' ? 'أعلى مبيعات' : 'Highest'}</p>
-          <p className="text-sm font-semibold text-green-600">
-            {formatCurrency(Math.max(...chartData.map(d => d.amount)))}
+      <div className="relative mt-6 grid grid-cols-3 gap-4 text-xs uppercase tracking-wide text-white/60">
+        <div className="rounded-2xl border border-white/5 bg-white/5 px-4 py-3 text-center">
+          <p>{dictionary.highest}</p>
+          <p className="mt-2 text-sm font-semibold text-emerald-300">{formatCurrency(highestValue)}</p>
+        </div>
+        <div className="rounded-2xl border border-white/5 bg-white/5 px-4 py-3 text-center">
+          <p>{dictionary.average}</p>
+          <p className="mt-2 text-sm font-semibold text-accent-blue">
+            {formatCurrency(Number.isFinite(averageValue) ? averageValue : 0)}
           </p>
         </div>
-        <div className="text-center">
-          <p className="text-xs text-gray-500">{locale === 'ar' ? 'المتوسط' : 'Average'}</p>
-          <p className="text-sm font-semibold text-blue-600">
-            {formatCurrency(chartData.reduce((sum, d) => sum + d.amount, 0) / chartData.length)}
-          </p>
+        <div className="rounded-2xl border border-white/5 bg-white/5 px-4 py-3 text-center">
+          <p>{dictionary.growth}</p>
+          <p className="mt-2 text-sm font-semibold text-brand-orange">+12.5%</p>
         </div>
-        <div className="text-center">
-          <p className="text-xs text-gray-500">{locale === 'ar' ? 'النمو' : 'Growth'}</p>
-          <p className="text-sm font-semibold text-primary-600">+12.5%</p>
-        </div>
-      </motion.div>
+      </div>
     </motion.div>
   )
 }

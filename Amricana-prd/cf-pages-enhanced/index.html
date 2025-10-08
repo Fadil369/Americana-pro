@@ -1,30 +1,190 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة توزيع الحلويات الذكية - SSDP</title>
-    <meta name="description" content="منصة توزيع الحلويات الذكية في المملكة العربية السعودية - رؤية 2030">
+    <title>منصة توزيع الحلويات الذكية - BrainSAIT SSDP</title>
+    <meta name="description" content="منصة توزيع الحلويات الذكية في المملكة العربية السعودية - مدعومة من BrainSAIT">
     
-    <!-- Preload critical resources -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" as="style">
-    <link rel="preload" href="/assets/css/enhanced.css" as="style">
-    <link rel="preload" href="/assets/js/enhanced.js" as="script">
+    <!-- BrainSAIT Brand Fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Stylesheets -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/enhanced.css">
+    <link rel="stylesheet" href="/assets/css/brainsait.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#ea580c">
+    <meta name="theme-color" content="#0a192f">
     
     <!-- Icons -->
     <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
     <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
 </head>
 <body>
+    <!-- BrainSAIT Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-animation">
+            <div class="brainsait-logo">🧠</div>
+            <div class="loading-text">جاري تحميل منصة BrainSAIT للحلويات الذكية...</div>
+            <div class="brand-text">مدعومة من BrainSAIT - الذكاء الاصطناعي للأعمال</div>
+        </div>
+    </div>
+
+    <!-- Real-time Alert Banner -->
+    <div id="alert-banner" class="alert-banner">
+        <div class="live-indicator">
+            <div class="live-dot"></div>
+            <span>تحديث مباشر: جميع الأنظمة تعمل بكفاءة عالية</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header brainsait-glass" id="header">
+        <div class="header-container">
+            <div class="header-left">
+                <button class="menu-btn" onclick="toggleSidebar()">
+                    <span class="hamburger"></span>
+                </button>
+                <div class="brand">
+                    <div class="brand-icon">🧠</div>
+                    <div class="brand-text">
+                        <h1>BrainSAIT SSDP</h1>
+                        <p>الذكاء الاصطناعي للحلويات</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="header-center">
+                <div class="search-container">
+                    <input type="text" id="global-search" placeholder="البحث في النظام..." class="search-input">
+                    <button class="search-btn">🔍</button>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <button class="header-btn" onclick="toggleLanguage()" title="تغيير اللغة">🌐</button>
+                <button class="header-btn" onclick="toggleTheme()" title="تغيير المظهر">🌙</button>
+                <button class="header-btn notification-btn live-indicator" title="الإشعارات">
+                    🔔
+                    <span class="notification-badge">3</span>
+                </button>
+                <div class="profile-menu">
+                    <div class="profile-avatar">م</div>
+                    <div class="profile-info">
+                        <span class="profile-name">مدير النظام</span>
+                        <span class="profile-role">BrainSAIT Admin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+        <!-- KPI Grid - Always Above Fold -->
+        <section class="kpi-section">
+            <div class="kpi-grid">
+                <div class="kpi-card sales-card">
+                    <div class="kpi-icon">💰</div>
+                    <div class="kpi-content">
+                        <div class="kpi-value" id="total-sales">0</div>
+                        <div class="kpi-label">إجمالي المبيعات اليوم</div>
+                        <div class="kpi-change positive">+12.5%</div>
+                    </div>
+                    <div class="telemetry-overlay">LIVE</div>
+                </div>
+                
+                <div class="kpi-card vehicles-card">
+                    <div class="kpi-icon">🚛</div>
+                    <div class="kpi-content">
+                        <div class="kpi-value" id="active-vehicles">0</div>
+                        <div class="kpi-label">المركبات النشطة</div>
+                        <div class="kpi-change positive">+2</div>
+                    </div>
+                    <div class="telemetry-overlay">REAL-TIME</div>
+                </div>
+                
+                <div class="kpi-card customers-card">
+                    <div class="kpi-icon">👥</div>
+                    <div class="kpi-content">
+                        <div class="kpi-value" id="active-customers">0</div>
+                        <div class="kpi-label">العملاء النشطون</div>
+                        <div class="kpi-change positive">+5.2%</div>
+                    </div>
+                    <div class="telemetry-overlay">SYNC</div>
+                </div>
+                
+                <div class="kpi-card orders-card">
+                    <div class="kpi-icon">📦</div>
+                    <div class="kpi-content">
+                        <div class="kpi-value" id="completed-orders">0</div>
+                        <div class="kpi-label">الطلبات المكتملة</div>
+                        <div class="kpi-change positive">+8.1%</div>
+                    </div>
+                    <div class="telemetry-overlay">ACTIVE</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Operations Map -->
+        <section class="operations-section">
+            <div class="map-container brainsait-glass">
+                <div class="map-header">
+                    <h3 class="brainsait-heading">العمليات المباشرة</h3>
+                    <div class="live-indicator">
+                        <div class="live-dot"></div>
+                        <span>مباشر</span>
+                    </div>
+                </div>
+                
+                <!-- Filter Chips -->
+                <div class="filter-chips">
+                    <button class="filter-chip active" data-filter="all">الكل</button>
+                    <button class="filter-chip" data-filter="vehicles">المركبات</button>
+                    <button class="filter-chip" data-filter="outlets">المنافذ</button>
+                    <button class="filter-chip" data-filter="deliveries">التوصيلات</button>
+                </div>
+                
+                <div class="map-content">
+                    <div id="operations-map"></div>
+                    <div class="telemetry-overlay">
+                        GPS: ACTIVE | SYNC: 30s | STATUS: ONLINE
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BrainSAIT Branding Footer -->
+        <footer class="brainsait-footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="brand-icon">🧠</div>
+                    <div>
+                        <h4>BrainSAIT</h4>
+                        <p>الذكاء الاصطناعي للأعمال</p>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <a href="https://github.com/brainsait" target="_blank">GitHub</a>
+                    <a href="https://linkedin.com/company/brainsait" target="_blank">LinkedIn</a>
+                    <a href="https://x.com/brainsait" target="_blank">X</a>
+                </div>
+                <div class="footer-text">
+                    <p>صُنع بـ ❤️ في المملكة العربية السعودية 🇸🇦</p>
+                    <p>BrainSAIT © 2024 - مدعوم بالذكاء الاصطناعي</p>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/assets/js/brainsait.js"></script>
+</body>
+</html>
     <!-- Loading Screen -->
     <div id="loading-screen" class="loading-screen">
         <div class="loading-animation">
