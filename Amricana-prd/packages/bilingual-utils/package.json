@@ -1,0 +1,20 @@
+{
+  "name": "@ssdp/bilingual-utils",
+  "version": "1.0.0",
+  "description": "Bilingual utilities for Arabic/English support in SSDP platform",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "keywords": [
+    "bilingual",
+    "arabic",
+    "rtl",
+    "i18n",
+    "localization",
+    "hijri-calendar"
+  ],
+  "author": "BrainSAIT",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

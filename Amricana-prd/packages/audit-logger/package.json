@@ -1,0 +1,15 @@
+{
+  "name": "@ssdp/audit-logger",
+  "version": "1.0.0",
+  "description": "Comprehensive audit logging package for SSDP platform",
+  "main": "src/index.py",
+  "keywords": [
+    "audit",
+    "logging",
+    "compliance",
+    "hipaa",
+    "security"
+  ],
+  "author": "BrainSAIT",
+  "license": "MIT"
+}
