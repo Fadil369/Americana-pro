@@ -1,0 +1,19 @@
+name = "ssdp-analytics-aggregator"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# KV Namespace for caching
+[[kv_namespaces]]
+binding = "SSDP_KV"
+id = "ssdp_kv_namespace"
+
+# R2 Bucket for report storage
+[[r2_buckets]]
+binding = "ANALYTICS_BUCKET"
+bucket_name = "ssdp-analytics-reports"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "SSDP_DB"
+database_name = "ssdp_production"
+database_id = "ssdp_db_id"

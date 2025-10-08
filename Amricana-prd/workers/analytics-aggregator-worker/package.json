@@ -1,0 +1,26 @@
+{
+  "name": "analytics-aggregator-worker",
+  "version": "1.0.0",
+  "description": "Real-time analytics aggregator for SSDP platform",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "keywords": [
+    "cloudflare-workers",
+    "analytics",
+    "real-time",
+    "aggregation"
+  ],
+  "author": "BrainSAIT",
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20231218.0",
+    "wrangler": "^3.22.1",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "itty-router": "^4.0.28"
+  }
+}
