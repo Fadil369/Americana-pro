@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - BrainSAIT SSDP</title>
+    <link rel="stylesheet" href="/assets/css/brainsait.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-animation">
+            <div class="brainsait-logo">🧠</div>
+            <div class="loading-text">جاري تحميل لوحة التحكم الكاملة...</div>
+            <div class="brand-text">BrainSAIT - الذكاء الاصطناعي للأعمال</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header brainsait-glass">
+        <div class="header-container">
+            <div class="header-left">
+                <button class="menu-btn" onclick="toggleSidebar()">
+                    <span class="hamburger"></span>
+                </button>
+                <div class="brand">
+                    <div class="brand-icon">🧠</div>
+                    <div class="brand-text">
+                        <h1>BrainSAIT SSDP</h1>
+                        <p>الذكاء الاصطناعي للحلويات</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <button class="header-btn" onclick="toggleLanguage()">🌐</button>
+                <button class="header-btn" onclick="toggleTheme()">🌙</button>
+                <button class="header-btn">🔔</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" style="padding-top: 90px;">
+        <!-- KPI Grid -->
+        <section class="kpi-section">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon">💰</div>
+                    <div class="kpi-value" id="total-sales">0</div>
+                    <div class="kpi-label">إجمالي المبيعات اليوم</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-icon">🚛</div>
+                    <div class="kpi-value" id="active-vehicles">0</div>
+                    <div class="kpi-label">المركبات النشطة</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-icon">👥</div>
+                    <div class="kpi-value" id="active-customers">0</div>
+                    <div class="kpi-label">العملاء النشطون</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-icon">📦</div>
+                    <div class="kpi-value" id="completed-orders">0</div>
+                    <div class="kpi-label">الطلبات المكتملة</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Operations Map -->
+        <section class="operations-section">
+            <div class="map-container brainsait-glass">
+                <div class="map-header">
+                    <h3>العمليات المباشرة</h3>
+                    <div class="live-indicator">
+                        <div class="live-dot"></div>
+                        <span>مباشر</span>
+                    </div>
+                </div>
+                
+                <div class="filter-chips">
+                    <button class="filter-chip active">الكل</button>
+                    <button class="filter-chip">المركبات</button>
+                    <button class="filter-chip">المنافذ</button>
+                    <button class="filter-chip">التوصيلات</button>
+                </div>
+                
+                <div class="map-content">
+                    <div id="operations-map" style="height: 300px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <p>خريطة العمليات المباشرة</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section class="products-section">
+            <div class="brainsait-glass" style="padding: 2rem; border-radius: 20px;">
+                <h3>المنتجات المتاحة</h3>
+                <div id="products-list" style="margin-top: 1rem;">
+                    <div class="loading">جاري تحميل المنتجات...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Simplified dashboard functionality
+        async function loadDashboardData() {
+            try {
+                // Load analytics
+                const analyticsResponse = await fetch('https://ssdp-api.dr-mf-12298.workers.dev/api/analytics/dashboard');
+                const analyticsData = await analyticsResponse.json();
+                
+                if (analyticsData.success) {
+                    animateCounter(document.getElementById('total-sales'), analyticsData.data.total_sales_today || 125430);
+                    animateCounter(document.getElementById('active-vehicles'), analyticsData.data.active_vehicles || 24);
+                    animateCounter(document.getElementById('active-customers'), analyticsData.data.active_customers || 1234);
+                    animateCounter(document.getElementById('completed-orders'), analyticsData.data.completed_orders || 89);
+                }
+
+                // Load products
+                const productsResponse = await fetch('https://ssdp-api.dr-mf-12298.workers.dev/api/products?limit=5');
+                const productsData = await productsResponse.json();
+                
+                if (productsData.success) {
+                    const productsList = document.getElementById('products-list');
+                    productsList.innerHTML = productsData.products.map(product => `
+                        <div style="padding: 1rem; margin: 0.5rem 0; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                            <strong>${product.name_ar}</strong><br>
+                            <small>${product.name_en} - ${product.price} ريال</small>
+                        </div>
+                    `).join('');
+                }
+
+                hideLoadingScreen();
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                hideLoadingScreen();
+            }
+        }
+
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current).toLocaleString('ar-SA');
+            }, 30);
+        }
+
+        function hideLoadingScreen() {
+            setTimeout(() => {
+                const loader = document.getElementById('loading-screen');
+                if (loader) {
+                    loader.classList.add('hidden');
+                }
+            }, 1000);
+        }
+
+        function toggleSidebar() {
+            console.log('Sidebar toggle');
+        }
+
+        function toggleLanguage() {
+            console.log('Language toggle');
+        }
+
+        function toggleTheme() {
+            console.log('Theme toggle');
+        }
+
+        // Initialize dashboard
+        window.addEventListener('load', () => {
+            setTimeout(loadDashboardData, 500);
+        });
+    </script>
+</body>
+</html>

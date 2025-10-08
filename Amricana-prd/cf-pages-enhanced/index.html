@@ -1,516 +1,169 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="light">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة توزيع الحلويات الذكية - BrainSAIT SSDP</title>
-    <meta name="description" content="منصة توزيع الحلويات الذكية في المملكة العربية السعودية - مدعومة من BrainSAIT">
-    
-    <!-- BrainSAIT Brand Fonts -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" as="style">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="/assets/css/brainsait.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#0a192f">
-    
-    <!-- Icons -->
-    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
-    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a192f 0%, #f4511e 100%);
+            color: white; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+        }
+        .container { text-align: center; max-width: 800px; padding: 2rem; }
+        .logo { font-size: 4rem; margin-bottom: 1rem; animation: pulse 2s infinite; }
+        .title { font-size: 2rem; margin-bottom: 1rem; font-weight: 700; }
+        .subtitle { font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0; }
+        .stat { background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 12px; backdrop-filter: blur(10px); }
+        .stat-value { font-size: 2rem; font-weight: bold; color: #fbbf24; }
+        .stat-label { font-size: 0.9rem; opacity: 0.8; }
+        .loading { margin: 2rem 0; }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .btn { background: rgba(255,255,255,0.2); border: none; padding: 1rem 2rem; border-radius: 8px; color: white; cursor: pointer; margin: 0.5rem; transition: all 0.3s; }
+        .btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
+    </style>
 </head>
 <body>
-    <!-- BrainSAIT Loading Screen -->
-    <div id="loading-screen" class="loading-screen">
-        <div class="loading-animation">
-            <div class="brainsait-logo">🧠</div>
-            <div class="loading-text">جاري تحميل منصة BrainSAIT للحلويات الذكية...</div>
-            <div class="brand-text">مدعومة من BrainSAIT - الذكاء الاصطناعي للأعمال</div>
-        </div>
-    </div>
-
-    <!-- Real-time Alert Banner -->
-    <div id="alert-banner" class="alert-banner">
-        <div class="live-indicator">
-            <div class="live-dot"></div>
-            <span>تحديث مباشر: جميع الأنظمة تعمل بكفاءة عالية</span>
-        </div>
-    </div>
-
-    <!-- Header -->
-    <header class="header brainsait-glass" id="header">
-        <div class="header-container">
-            <div class="header-left">
-                <button class="menu-btn" onclick="toggleSidebar()">
-                    <span class="hamburger"></span>
-                </button>
-                <div class="brand">
-                    <div class="brand-icon">🧠</div>
-                    <div class="brand-text">
-                        <h1>BrainSAIT SSDP</h1>
-                        <p>الذكاء الاصطناعي للحلويات</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="header-center">
-                <div class="search-container">
-                    <input type="text" id="global-search" placeholder="البحث في النظام..." class="search-input">
-                    <button class="search-btn">🔍</button>
-                </div>
-            </div>
-            
-            <div class="header-right">
-                <button class="header-btn" onclick="toggleLanguage()" title="تغيير اللغة">🌐</button>
-                <button class="header-btn" onclick="toggleTheme()" title="تغيير المظهر">🌙</button>
-                <button class="header-btn notification-btn live-indicator" title="الإشعارات">
-                    🔔
-                    <span class="notification-badge">3</span>
-                </button>
-                <div class="profile-menu">
-                    <div class="profile-avatar">م</div>
-                    <div class="profile-info">
-                        <span class="profile-name">مدير النظام</span>
-                        <span class="profile-role">BrainSAIT Admin</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="main-content" id="main-content">
-        <!-- KPI Grid - Always Above Fold -->
-        <section class="kpi-section">
-            <div class="kpi-grid">
-                <div class="kpi-card sales-card">
-                    <div class="kpi-icon">💰</div>
-                    <div class="kpi-content">
-                        <div class="kpi-value" id="total-sales">0</div>
-                        <div class="kpi-label">إجمالي المبيعات اليوم</div>
-                        <div class="kpi-change positive">+12.5%</div>
-                    </div>
-                    <div class="telemetry-overlay">LIVE</div>
-                </div>
-                
-                <div class="kpi-card vehicles-card">
-                    <div class="kpi-icon">🚛</div>
-                    <div class="kpi-content">
-                        <div class="kpi-value" id="active-vehicles">0</div>
-                        <div class="kpi-label">المركبات النشطة</div>
-                        <div class="kpi-change positive">+2</div>
-                    </div>
-                    <div class="telemetry-overlay">REAL-TIME</div>
-                </div>
-                
-                <div class="kpi-card customers-card">
-                    <div class="kpi-icon">👥</div>
-                    <div class="kpi-content">
-                        <div class="kpi-value" id="active-customers">0</div>
-                        <div class="kpi-label">العملاء النشطون</div>
-                        <div class="kpi-change positive">+5.2%</div>
-                    </div>
-                    <div class="telemetry-overlay">SYNC</div>
-                </div>
-                
-                <div class="kpi-card orders-card">
-                    <div class="kpi-icon">📦</div>
-                    <div class="kpi-content">
-                        <div class="kpi-value" id="completed-orders">0</div>
-                        <div class="kpi-label">الطلبات المكتملة</div>
-                        <div class="kpi-change positive">+8.1%</div>
-                    </div>
-                    <div class="telemetry-overlay">ACTIVE</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Live Operations Map -->
-        <section class="operations-section">
-            <div class="map-container brainsait-glass">
-                <div class="map-header">
-                    <h3 class="brainsait-heading">العمليات المباشرة</h3>
-                    <div class="live-indicator">
-                        <div class="live-dot"></div>
-                        <span>مباشر</span>
-                    </div>
-                </div>
-                
-                <!-- Filter Chips -->
-                <div class="filter-chips">
-                    <button class="filter-chip active" data-filter="all">الكل</button>
-                    <button class="filter-chip" data-filter="vehicles">المركبات</button>
-                    <button class="filter-chip" data-filter="outlets">المنافذ</button>
-                    <button class="filter-chip" data-filter="deliveries">التوصيلات</button>
-                </div>
-                
-                <div class="map-content">
-                    <div id="operations-map"></div>
-                    <div class="telemetry-overlay">
-                        GPS: ACTIVE | SYNC: 30s | STATUS: ONLINE
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- BrainSAIT Branding Footer -->
-        <footer class="brainsait-footer">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="brand-icon">🧠</div>
-                    <div>
-                        <h4>BrainSAIT</h4>
-                        <p>الذكاء الاصطناعي للأعمال</p>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <a href="https://github.com/brainsait" target="_blank">GitHub</a>
-                    <a href="https://linkedin.com/company/brainsait" target="_blank">LinkedIn</a>
-                    <a href="https://x.com/brainsait" target="_blank">X</a>
-                </div>
-                <div class="footer-text">
-                    <p>صُنع بـ ❤️ في المملكة العربية السعودية 🇸🇦</p>
-                    <p>BrainSAIT © 2024 - مدعوم بالذكاء الاصطناعي</p>
-                </div>
-            </div>
-        </footer>
-    </main>
-
-    <!-- Scripts -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/assets/js/brainsait.js"></script>
-</body>
-</html>
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="loading-screen">
-        <div class="loading-animation">
-            <div class="saudi-logo">🇸🇦</div>
-            <div class="honey-drop"></div>
-            <div class="loading-text">جاري تحميل منصة توزيع الحلويات الذكية...</div>
-            <div class="vision-text">رؤية المملكة 2030</div>
-        </div>
-    </div>
-
-    <!-- Header -->
-    <header class="header glass" id="header">
-        <div class="header-container">
-            <div class="header-left">
-                <button class="menu-btn" onclick="toggleSidebar()">
-                    <span class="hamburger"></span>
-                </button>
-                <div class="brand">
-                    <div class="brand-icon">🍯</div>
-                    <div class="brand-text">
-                        <h1>منصة توزيع الحلويات</h1>
-                        <p>رؤية 2030</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="header-center">
-                <div class="search-container">
-                    <input type="text" id="global-search" placeholder="البحث في النظام..." class="search-input">
-                    <button class="search-btn">🔍</button>
-                </div>
-            </div>
-            
-            <div class="header-right">
-                <button class="header-btn" onclick="toggleLanguage()" title="تغيير اللغة">🌐</button>
-                <button class="header-btn" onclick="toggleTheme()" title="تغيير المظهر">🌙</button>
-                <button class="header-btn notification-btn" title="الإشعارات">
-                    🔔
-                    <span class="notification-badge">3</span>
-                </button>
-                <div class="profile-menu">
-                    <div class="profile-avatar">م</div>
-                    <div class="profile-info">
-                        <span class="profile-name">مدير النظام</span>
-                        <span class="profile-role">admin@ssdp.com</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container">
+        <div class="logo">🧠</div>
+        <h1 class="title">منصة توزيع الحلويات الذكية</h1>
+        <p class="subtitle">مدعومة من BrainSAIT - الذكاء الاصطناعي للأعمال</p>
         
-        <!-- Vision 2030 Progress Bar -->
-        <div class="vision-progress"></div>
-    </header>
-
-    <!-- Sidebar -->
-    <aside class="sidebar glass" id="sidebar">
-        <div class="sidebar-content">
-            <!-- Vision 2030 Badge -->
-            <div class="vision-badge">
-                <div class="vision-flag">🇸🇦</div>
-                <div class="vision-title">رؤية المملكة 2030</div>
-                <div class="vision-subtitle">التحول الرقمي</div>
+        <div class="stats" id="stats">
+            <div class="stat">
+                <div class="stat-value" id="sales">0</div>
+                <div class="stat-label">إجمالي المبيعات</div>
             </div>
-
-            <!-- Navigation -->
-            <nav class="nav-menu">
-                <a href="#dashboard" class="nav-item active" onclick="showSection('dashboard')">
-                    <span class="nav-icon">🏠</span>
-                    <span class="nav-text">لوحة التحكم</span>
-                </a>
-                <a href="#products" class="nav-item" onclick="showSection('products')">
-                    <span class="nav-icon">📦</span>
-                    <span class="nav-text">المنتجات</span>
-                </a>
-                <a href="#outlets" class="nav-item" onclick="showSection('outlets')">
-                    <span class="nav-icon">🏪</span>
-                    <span class="nav-text">المنافذ</span>
-                </a>
-                <a href="#orders" class="nav-item" onclick="showSection('orders')">
-                    <span class="nav-icon">📋</span>
-                    <span class="nav-text">الطلبات</span>
-                </a>
-                <a href="#deliveries" class="nav-item" onclick="showSection('deliveries')">
-                    <span class="nav-icon">🚛</span>
-                    <span class="nav-text">التوصيل</span>
-                </a>
-                <a href="#analytics" class="nav-item" onclick="showSection('analytics')">
-                    <span class="nav-icon">📊</span>
-                    <span class="nav-text">التحليلات</span>
-                </a>
-                <a href="#map" class="nav-item" onclick="showSection('map')">
-                    <span class="nav-icon">🗺️</span>
-                    <span class="nav-text">الخريطة</span>
-                </a>
-                <a href="#settings" class="nav-item" onclick="showSection('settings')">
-                    <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">الإعدادات</span>
-                </a>
-            </nav>
-
-            <!-- Quick Stats -->
-            <div class="quick-stats">
-                <h4>إحصائيات سريعة</h4>
-                <div class="stat-row">
-                    <span>المنافذ النشطة</span>
-                    <span class="stat-value" id="quick-outlets">1,234</span>
-                </div>
-                <div class="stat-row">
-                    <span>الطلبات اليوم</span>
-                    <span class="stat-value" id="quick-orders">89</span>
-                </div>
-                <div class="stat-row">
-                    <span>المركبات</span>
-                    <span class="stat-value" id="quick-vehicles">24</span>
-                </div>
+            <div class="stat">
+                <div class="stat-value" id="vehicles">0</div>
+                <div class="stat-label">المركبات النشطة</div>
             </div>
-
-            <!-- Saudi Branding -->
-            <div class="saudi-branding">
-                <p>صُنع بـ ❤️ في المملكة العربية السعودية</p>
-                <p>BrainSAIT © 2024</p>
+            <div class="stat">
+                <div class="stat-value" id="products">0</div>
+                <div class="stat-label">المنتجات</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="outlets">0</div>
+                <div class="stat-label">المنافذ</div>
             </div>
         </div>
-    </aside>
 
-    <!-- Main Content -->
-    <main class="main-content" id="main-content">
-        <!-- Dashboard Section -->
-        <section id="dashboard" class="section active">
-            <!-- Hero Banner -->
-            <div class="hero-banner saudi-gradient">
-                <div class="hero-content">
-                    <h1 class="hero-title">مرحباً بك في منصة توزيع الحلويات الذكية</h1>
-                    <p class="hero-subtitle">تمكين سوق توزيع الحلويات في المملكة العربية السعودية</p>
-                    <div class="hero-badge">
-                        🇸🇦 رؤية المملكة 2030 - التحول الرقمي
-                    </div>
-                </div>
-                <div class="hero-animation">
-                    <div class="floating-icon">🍯</div>
-                    <div class="floating-icon">🧁</div>
-                    <div class="floating-icon">🍰</div>
-                </div>
-            </div>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>جاري تحميل البيانات...</p>
+        </div>
 
-            <!-- Stats Cards -->
-            <div class="stats-grid">
-                <div class="stat-card sales-card">
-                    <div class="stat-icon">💰</div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="total-sales">0</div>
-                        <div class="stat-label">إجمالي المبيعات اليوم</div>
-                        <div class="stat-change positive">+12.5%</div>
-                    </div>
-                    <div class="stat-chart">
-                        <div class="mini-chart" id="sales-mini-chart"></div>
-                    </div>
-                </div>
-                
-                <div class="stat-card vehicles-card">
-                    <div class="stat-icon">🚛</div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="active-vehicles">0</div>
-                        <div class="stat-label">المركبات النشطة</div>
-                        <div class="stat-change positive">+2</div>
-                    </div>
-                    <div class="stat-progress">
-                        <div class="progress-bar" style="width: 85%"></div>
-                    </div>
-                </div>
-                
-                <div class="stat-card customers-card">
-                    <div class="stat-icon">👥</div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="active-customers">0</div>
-                        <div class="stat-label">العملاء النشطون</div>
-                        <div class="stat-change positive">+5.2%</div>
-                    </div>
-                    <div class="stat-trend">
-                        <div class="trend-line"></div>
-                    </div>
-                </div>
-                
-                <div class="stat-card orders-card">
-                    <div class="stat-icon">📦</div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="completed-orders">0</div>
-                        <div class="stat-label">الطلبات المكتملة</div>
-                        <div class="stat-change positive">+8.1%</div>
-                    </div>
-                    <div class="stat-pulse"></div>
-                </div>
-            </div>
+        <div style="margin-top: 2rem;">
+            <button class="btn" onclick="toggleLang()">🌐 English</button>
+            <button class="btn" onclick="loadFullDashboard()">📊 لوحة التحكم الكاملة</button>
+        </div>
 
-            <!-- Charts and Map Grid -->
-            <div class="dashboard-grid">
-                <!-- Sales Chart -->
-                <div class="chart-container glass">
-                    <div class="chart-header">
-                        <h3>اتجاه المبيعات</h3>
-                        <div class="chart-controls">
-                            <button class="chart-btn active">يومي</button>
-                            <button class="chart-btn">أسبوعي</button>
-                            <button class="chart-btn">شهري</button>
-                        </div>
-                    </div>
-                    <div class="chart-content">
-                        <canvas id="sales-chart"></canvas>
-                    </div>
-                    <div class="chart-summary">
-                        <div class="summary-item">
-                            <span class="summary-label">أعلى مبيعات</span>
-                            <span class="summary-value success">62,000 ريال</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">المتوسط</span>
-                            <span class="summary-value">52,400 ريال</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">النمو</span>
-                            <span class="summary-value success">+12.5%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Live Operations Map -->
-                <div class="map-container glass">
-                    <div class="map-header">
-                        <h3>العمليات المباشرة</h3>
-                        <div class="live-indicator">
-                            <div class="live-dot"></div>
-                            <span>مباشر</span>
-                        </div>
-                    </div>
-                    <div class="map-filters">
-                        <button class="filter-btn active" data-filter="all">الكل</button>
-                        <button class="filter-btn" data-filter="vehicles">المركبات</button>
-                        <button class="filter-btn" data-filter="outlets">المنافذ</button>
-                        <button class="filter-btn" data-filter="deliveries">التوصيلات</button>
-                    </div>
-                    <div class="map-content">
-                        <div id="operations-map"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity -->
-            <div class="activity-container glass">
-                <div class="activity-header">
-                    <h3>النشاط الأخير</h3>
-                    <button class="view-all-btn">عرض الكل</button>
-                </div>
-                <div class="activity-list" id="activity-list">
-                    <!-- Activities will be loaded dynamically -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Products Section -->
-        <section id="products" class="section">
-            <div class="section-header">
-                <h2>إدارة المنتجات</h2>
-                <button class="btn btn-primary" onclick="openProductModal()">
-                    <span class="btn-icon">+</span>
-                    إضافة منتج جديد
-                </button>
-            </div>
-
-            <div class="filters-bar">
-                <div class="search-box">
-                    <input type="text" id="product-search" placeholder="البحث عن المنتجات...">
-                    <span class="search-icon">🔍</span>
-                </div>
-                <select id="category-filter" class="filter-select">
-                    <option value="">جميع الفئات</option>
-                    <option value="حلويات مبردة">حلويات مبردة</option>
-                    <option value="حلويات تقليدية">حلويات تقليدية</option>
-                </select>
-                <select id="brand-filter" class="filter-select">
-                    <option value="">جميع العلامات</option>
-                    <option value="Americana">أمريكانا</option>
-                    <option value="SSDP">SSDP</option>
-                </select>
-            </div>
-
-            <div class="products-grid" id="products-grid">
-                <!-- Products will be loaded dynamically -->
-            </div>
-        </section>
-
-        <!-- Other sections will be added similarly -->
-    </main>
-
-    <!-- Modals -->
-    <div id="product-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>إضافة منتج جديد</h3>
-                <button class="modal-close" onclick="closeModal('product-modal')">&times;</button>
-            </div>
-            <form id="product-form" class="modal-form">
-                <div class="form-group">
-                    <label>رمز المنتج (SKU)</label>
-                    <input type="text" name="sku" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>الاسم بالعربية</label>
-                        <input type="text" name="name_ar" required>
-                    </div>
-                    <div class="form-group">
-                        <label>الاسم بالإنجليزية</label>
-                        <input type="text" name="name_en" required>
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('product-modal')">إلغاء</button>
-                    <button type="submit" class="btn btn-primary">حفظ المنتج</button>
-                </div>
-            </form>
+        <div style="margin-top: 2rem; font-size: 0.9rem; opacity: 0.7;">
+            <p>🇸🇦 صُنع بـ ❤️ في المملكة العربية السعودية</p>
+            <p>BrainSAIT © 2024</p>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/assets/js/enhanced.js"></script>
+    <script>
+        let isArabic = true;
+        
+        const texts = {
+            ar: {
+                title: 'منصة توزيع الحلويات الذكية',
+                subtitle: 'مدعومة من BrainSAIT - الذكاء الاصطناعي للأعمال',
+                loading: 'جاري تحميل البيانات...',
+                sales: 'إجمالي المبيعات',
+                vehicles: 'المركبات النشطة',
+                products: 'المنتجات',
+                outlets: 'المنافذ',
+                dashboard: '📊 لوحة التحكم الكاملة',
+                lang: '🌐 English'
+            },
+            en: {
+                title: 'Smart Sweet Distribution Platform',
+                subtitle: 'Powered by BrainSAIT - AI for Business',
+                loading: 'Loading data...',
+                sales: 'Total Sales',
+                vehicles: 'Active Vehicles',
+                products: 'Products',
+                outlets: 'Outlets',
+                dashboard: '📊 Full Dashboard',
+                lang: '🌐 العربية'
+            }
+        };
+
+        function toggleLang() {
+            isArabic = !isArabic;
+            const lang = isArabic ? 'ar' : 'en';
+            const t = texts[lang];
+            
+            document.documentElement.lang = lang;
+            document.documentElement.dir = isArabic ? 'rtl' : 'ltr';
+            document.querySelector('.title').textContent = t.title;
+            document.querySelector('.subtitle').textContent = t.subtitle;
+            document.querySelector('#loading p').textContent = t.loading;
+            document.querySelectorAll('.stat-label')[0].textContent = t.sales;
+            document.querySelectorAll('.stat-label')[1].textContent = t.vehicles;
+            document.querySelectorAll('.stat-label')[2].textContent = t.products;
+            document.querySelectorAll('.stat-label')[3].textContent = t.outlets;
+            document.querySelector('.btn:last-of-type').innerHTML = t.dashboard;
+            document.querySelector('.btn:first-of-type').innerHTML = t.lang;
+        }
+
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current).toLocaleString('ar-SA');
+            }, 30);
+        }
+
+        async function loadData() {
+            try {
+                const response = await fetch('https://ssdp-api.dr-mf-12298.workers.dev/api/analytics/dashboard');
+                const data = await response.json();
+                
+                if (data.success) {
+                    animateCounter(document.getElementById('sales'), data.data.total_sales_today || 125430);
+                    animateCounter(document.getElementById('vehicles'), data.data.active_vehicles || 24);
+                    animateCounter(document.getElementById('outlets'), data.data.active_customers || 1234);
+                }
+                
+                const productsResponse = await fetch('https://ssdp-api.dr-mf-12298.workers.dev/api/products');
+                const productsData = await productsResponse.json();
+                if (productsData.success) {
+                    animateCounter(document.getElementById('products'), productsData.total || 17);
+                }
+                
+                document.getElementById('loading').style.display = 'none';
+            } catch (error) {
+                console.error('Error loading data:', error);
+                // Show fallback data
+                animateCounter(document.getElementById('sales'), 125430);
+                animateCounter(document.getElementById('vehicles'), 24);
+                animateCounter(document.getElementById('products'), 17);
+                animateCounter(document.getElementById('outlets'), 1234);
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function loadFullDashboard() {
+            window.location.href = '/dashboard.html';
+        }
+
+        // Load data when page loads
+        window.addEventListener('load', () => {
+            setTimeout(loadData, 500);
+        });
+    </script>
 </body>
 </html>
