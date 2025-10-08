@@ -9,6 +9,7 @@
   "dashboard": {
     "welcome": "مرحباً",
     "todayTarget": "هدف اليوم",
+    "target": "الهدف",
     "achieved": "تم تحقيقه",
     "pendingOrders": "الطلبات المعلقة",
     "completedDeliveries": "التسليمات المكتملة"
@@ -36,5 +37,21 @@
     "customers": "العملاء",
     "reports": "التقارير",
     "profile": "الملف الشخصي"
+  },
+  "salesRep": {
+    "checkIn": "تسجيل دخول",
+    "voiceOrder": "طلب صوتي",
+    "arCatalog": "كتالوج الواقع المعزز",
+    "collections": "التحصيل",
+    "outlets": "المنافذ",
+    "map": "الخريطة"
+  },
+  "driver": {
+    "route": "المسار",
+    "manifest": "قائمة التسليم",
+    "proofOfDelivery": "إثبات التسليم",
+    "incident": "الإبلاغ عن حادث",
+    "vehicle": "المركبة",
+    "earnings": "الأرباح"
   }
 }

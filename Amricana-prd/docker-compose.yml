@@ -73,73 +73,8 @@ services:
       - redis
     networks:
       - ssdp-network
-
-  # Saudi API Integration Service
-  saudi-api-service:
-    build:
-      context: ./services/saudi-api-service
-      dockerfile: Dockerfile
-    ports:
-      - "8009:8009"
-    environment:
-      - WATHQ_API_KEY=Gkry243IzGXLzG88mKsbmGN6oUiUsI1E
-      - WATHQ_API_PASSWORD=XJA6NGmEQhnyA7xB
-    networks:
-      - ssdp-network
-
-  # Computer Vision Service (Phase 4)
-  computer-vision-service:
-    build:
-      context: ./services/computer-vision-service
-      dockerfile: Dockerfile
-    ports:
-      - "8004:8004"
-    environment:
-      - CV_MODEL_PATH=/models
-      - CV_CONFIDENCE_THRESHOLD=0.85
-    networks:
-      - ssdp-network
-
-  # IoT Integration Service (Phase 4)
-  iot-integration-service:
-    build:
-      context: ./services/iot-integration-service
-      dockerfile: Dockerfile
-    ports:
-      - "8005:8005"
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - IOT_WS_TIMEOUT=300
-    depends_on:
-      - redis
-    networks:
-      - ssdp-network
-
-  # Blockchain Service (Phase 4)
-  blockchain-service:
-    build:
-      context: ./services/blockchain-service
-      dockerfile: Dockerfile
-    ports:
-      - "8006:8006"
-    environment:
-      - BLOCKCHAIN_DIFFICULTY=2
-      - BLOCKCHAIN_MINING_REWARD=1.0
-    networks:
-      - ssdp-network
-
-  # Autonomous Delivery Service (Phase 4)
-  autonomous-delivery-service:
-    build:
-      context: ./services/autonomous-delivery-service
-      dockerfile: Dockerfile
-    ports:
-      - "8007:8007"
-    environment:
-      - AUTO_FLEET_SIZE=10
-      - AUTO_MAX_CONCURRENT_MISSIONS=50
-    networks:
-      - ssdp-network
+    # Uncomment to create Dockerfile
+    # command: sh -c "echo 'FROM python:3.11-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install -r requirements.txt\nCOPY . .\nCMD [\"python\", \"main.py\"]' > /tmp/Dockerfile && echo 'Build required'"
 
   # Finance Service (ZATCA Integration)
   finance-service:
@@ -157,6 +92,19 @@ services:
       - redis
     volumes:
       - ./certificates:/app/certificates
+    networks:
+      - ssdp-network
+
+  # Saudi API Integration Service
+  saudi-api-service:
+    build:
+      context: ./services/saudi-api-service
+      dockerfile: Dockerfile
+    ports:
+      - "8004:8004"
+    environment:
+      - WATHQ_API_KEY=Gkry243IzGXLzG88mKsbmGN6oUiUsI1E
+      - WATHQ_API_PASSWORD=XJA6NGmEQhnyA7xB
     networks:
       - ssdp-network
 

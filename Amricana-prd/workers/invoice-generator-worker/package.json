@@ -1,0 +1,27 @@
+{
+  "name": "invoice-generator-worker",
+  "version": "1.0.0",
+  "description": "ZATCA-compliant invoice generator for SSDP platform",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "keywords": [
+    "cloudflare-workers",
+    "zatca",
+    "invoice",
+    "saudi-arabia",
+    "e-invoicing"
+  ],
+  "author": "BrainSAIT",
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20231218.0",
+    "wrangler": "^3.22.1",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "itty-router": "^4.0.28"
+  }
+}
