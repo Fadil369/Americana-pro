@@ -11,11 +11,24 @@ class SSDP {
     }
 
     async init() {
-        await this.loadInitialData();
-        this.setupEventListeners();
-        this.setupServiceWorker();
-        this.hideLoadingScreen();
-        this.startRealTimeUpdates();
+        try {
+            // Setup UI first
+            this.setupEventListeners();
+            this.hideLoadingScreen();
+            
+            // Load data asynchronously without blocking
+            this.loadInitialData().catch(error => {
+                console.warn('Initial data loading failed:', error);
+                this.showNotification('تم تحميل الواجهة بنجاح، جاري تحميل البيانات...', 'info');
+            });
+            
+            this.setupServiceWorker();
+            this.startRealTimeUpdates();
+        } catch (error) {
+            console.error('Initialization failed:', error);
+            this.hideLoadingScreen();
+            this.showNotification('حدث خطأ في التهيئة', 'error');
+        }
     }
 
     // API Methods
@@ -65,32 +78,66 @@ class SSDP {
     // Data Loading
     async loadInitialData() {
         try {
-            const [dashboardData, productsData, outletsData] = await Promise.all([
+            // Add timeout to prevent hanging
+            const timeout = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Request timeout')), 10000)
+            );
+
+            const dashboardPromise = Promise.race([
                 this.apiCall('/analytics/dashboard'),
+                timeout
+            ]).catch(() => ({ success: false, data: this.getFallbackDashboardData() }));
+
+            const productsPromise = Promise.race([
                 this.apiCall('/products'),
-                this.apiCall('/outlets')
+                timeout
+            ]).catch(() => ({ success: false, products: [] }));
+
+            const outletsPromise = Promise.race([
+                this.apiCall('/outlets'),
+                timeout
+            ]).catch(() => ({ success: false, outlets: [] }));
+
+            const [dashboardData, productsData, outletsData] = await Promise.all([
+                dashboardPromise,
+                productsPromise,
+                outletsPromise
             ]);
 
             if (dashboardData.success) {
                 this.updateDashboardStats(dashboardData.data);
+            } else {
+                this.updateDashboardStats(this.getFallbackDashboardData());
             }
+
             if (productsData.success) {
                 this.renderProducts(productsData.products || []);
+            } else {
+                this.renderProducts([]);
             }
+
             if (outletsData.success) {
                 this.renderOutlets(outletsData.outlets || []);
+            } else {
+                this.renderOutlets([]);
             }
             
         } catch (error) {
             console.error('Failed to load initial data:', error);
-            // Show fallback data
-            this.updateDashboardStats({
-                total_sales_today: 0,
-                active_vehicles: 0,
-                active_customers: 0,
-                completed_orders: 0
-            });
+            // Load fallback data
+            this.updateDashboardStats(this.getFallbackDashboardData());
+            this.renderProducts([]);
+            this.renderOutlets([]);
         }
+    }
+
+    getFallbackDashboardData() {
+        return {
+            total_sales_today: 0,
+            active_vehicles: 0,
+            active_customers: 0,
+            completed_orders: 0
+        };
     }
 
     // Dashboard Updates
@@ -525,12 +572,31 @@ class SSDP {
     }
 
     hideLoadingScreen() {
-        setTimeout(() => {
+        // Ensure loading screen is hidden after a maximum of 2 seconds
+        const hideLoader = () => {
             const loader = document.getElementById('loading-screen');
             if (loader) {
                 loader.classList.add('hidden');
             }
-        }, 1000);
+        };
+
+        // Hide immediately if DOM is ready
+        if (document.readyState === 'complete') {
+            setTimeout(hideLoader, 500);
+        } else {
+            // Wait for DOM to be ready, but not more than 2 seconds
+            const maxWait = setTimeout(hideLoader, 2000);
+            
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    clearTimeout(maxWait);
+                    setTimeout(hideLoader, 500);
+                });
+            } else {
+                clearTimeout(maxWait);
+                setTimeout(hideLoader, 500);
+            }
+        }
     }
 
     // Real-time Updates
@@ -579,17 +645,39 @@ class SSDP {
 }
 
 // Global instance
-const ssdp = new SSDP();
+let ssdp;
+
+// Initialize immediately when script loads
+try {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            ssdp = new SSDP();
+        });
+    } else {
+        ssdp = new SSDP();
+    }
+} catch (error) {
+    console.error('Failed to initialize SSDP:', error);
+    // Fallback: hide loading screen manually
+    setTimeout(() => {
+        const loader = document.getElementById('loading-screen');
+        if (loader) {
+            loader.classList.add('hidden');
+        }
+    }, 1000);
+}
 
 // Global functions for HTML onclick handlers
-window.toggleTheme = () => ssdp.toggleTheme();
-window.toggleLanguage = () => ssdp.toggleLanguage();
-window.openProductModal = () => ssdp.openProductModal();
-window.openOutletModal = () => ssdp.openOutletModal();
-window.closeModal = (id) => ssdp.closeModal(id);
+window.toggleTheme = () => ssdp?.toggleTheme();
+window.toggleLanguage = () => ssdp?.toggleLanguage();
+window.openProductModal = () => ssdp?.openProductModal();
+window.openOutletModal = () => ssdp?.openOutletModal();
+window.closeModal = (id) => ssdp?.closeModal(id);
 window.toggleNav = () => {
     const menu = document.getElementById('nav-menu');
-    menu.classList.toggle('active');
+    if (menu) {
+        menu.classList.toggle('active');
+    }
 };
 
 // Make ssdp methods available globally for onclick handlers

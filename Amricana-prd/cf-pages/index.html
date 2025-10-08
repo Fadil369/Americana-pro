@@ -240,10 +240,30 @@
     <script src="/assets/js/components.js"></script>
     <script src="/assets/js/api.js"></script>
     
+    <!-- Fallback loading screen removal -->
+    <script>
+        // Ensure loading screen is removed after 3 seconds maximum
+        setTimeout(() => {
+            const loader = document.getElementById('loading-screen');
+            if (loader && !loader.classList.contains('hidden')) {
+                loader.classList.add('hidden');
+                console.log('Loading screen removed by fallback');
+            }
+        }, 3000);
+        
+        // Also remove on any error
+        window.addEventListener('error', () => {
+            const loader = document.getElementById('loading-screen');
+            if (loader) {
+                loader.classList.add('hidden');
+            }
+        });
+    </script>
+    
     <!-- Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
+            navigator.serviceWorker.register('/sw.js').catch(console.error);
         }
     </script>
 </body>

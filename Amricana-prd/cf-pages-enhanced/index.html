@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة توزيع الحلويات الذكية - SSDP</title>
+    <meta name="description" content="منصة توزيع الحلويات الذكية في المملكة العربية السعودية - رؤية 2030">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" as="style">
+    <link rel="preload" href="/assets/css/enhanced.css" as="style">
+    <link rel="preload" href="/assets/js/enhanced.js" as="script">
+    
+    <!-- Stylesheets -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/enhanced.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#ea580c">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-animation">
+            <div class="saudi-logo">🇸🇦</div>
+            <div class="honey-drop"></div>
+            <div class="loading-text">جاري تحميل منصة توزيع الحلويات الذكية...</div>
+            <div class="vision-text">رؤية المملكة 2030</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header glass" id="header">
+        <div class="header-container">
+            <div class="header-left">
+                <button class="menu-btn" onclick="toggleSidebar()">
+                    <span class="hamburger"></span>
+                </button>
+                <div class="brand">
+                    <div class="brand-icon">🍯</div>
+                    <div class="brand-text">
+                        <h1>منصة توزيع الحلويات</h1>
+                        <p>رؤية 2030</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="header-center">
+                <div class="search-container">
+                    <input type="text" id="global-search" placeholder="البحث في النظام..." class="search-input">
+                    <button class="search-btn">🔍</button>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <button class="header-btn" onclick="toggleLanguage()" title="تغيير اللغة">🌐</button>
+                <button class="header-btn" onclick="toggleTheme()" title="تغيير المظهر">🌙</button>
+                <button class="header-btn notification-btn" title="الإشعارات">
+                    🔔
+                    <span class="notification-badge">3</span>
+                </button>
+                <div class="profile-menu">
+                    <div class="profile-avatar">م</div>
+                    <div class="profile-info">
+                        <span class="profile-name">مدير النظام</span>
+                        <span class="profile-role">admin@ssdp.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vision 2030 Progress Bar -->
+        <div class="vision-progress"></div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar glass" id="sidebar">
+        <div class="sidebar-content">
+            <!-- Vision 2030 Badge -->
+            <div class="vision-badge">
+                <div class="vision-flag">🇸🇦</div>
+                <div class="vision-title">رؤية المملكة 2030</div>
+                <div class="vision-subtitle">التحول الرقمي</div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-item active" onclick="showSection('dashboard')">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-text">لوحة التحكم</span>
+                </a>
+                <a href="#products" class="nav-item" onclick="showSection('products')">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text">المنتجات</span>
+                </a>
+                <a href="#outlets" class="nav-item" onclick="showSection('outlets')">
+                    <span class="nav-icon">🏪</span>
+                    <span class="nav-text">المنافذ</span>
+                </a>
+                <a href="#orders" class="nav-item" onclick="showSection('orders')">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">الطلبات</span>
+                </a>
+                <a href="#deliveries" class="nav-item" onclick="showSection('deliveries')">
+                    <span class="nav-icon">🚛</span>
+                    <span class="nav-text">التوصيل</span>
+                </a>
+                <a href="#analytics" class="nav-item" onclick="showSection('analytics')">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">التحليلات</span>
+                </a>
+                <a href="#map" class="nav-item" onclick="showSection('map')">
+                    <span class="nav-icon">🗺️</span>
+                    <span class="nav-text">الخريطة</span>
+                </a>
+                <a href="#settings" class="nav-item" onclick="showSection('settings')">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">الإعدادات</span>
+                </a>
+            </nav>
+
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+                <h4>إحصائيات سريعة</h4>
+                <div class="stat-row">
+                    <span>المنافذ النشطة</span>
+                    <span class="stat-value" id="quick-outlets">1,234</span>
+                </div>
+                <div class="stat-row">
+                    <span>الطلبات اليوم</span>
+                    <span class="stat-value" id="quick-orders">89</span>
+                </div>
+                <div class="stat-row">
+                    <span>المركبات</span>
+                    <span class="stat-value" id="quick-vehicles">24</span>
+                </div>
+            </div>
+
+            <!-- Saudi Branding -->
+            <div class="saudi-branding">
+                <p>صُنع بـ ❤️ في المملكة العربية السعودية</p>
+                <p>BrainSAIT © 2024</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <!-- Hero Banner -->
+            <div class="hero-banner saudi-gradient">
+                <div class="hero-content">
+                    <h1 class="hero-title">مرحباً بك في منصة توزيع الحلويات الذكية</h1>
+                    <p class="hero-subtitle">تمكين سوق توزيع الحلويات في المملكة العربية السعودية</p>
+                    <div class="hero-badge">
+                        🇸🇦 رؤية المملكة 2030 - التحول الرقمي
+                    </div>
+                </div>
+                <div class="hero-animation">
+                    <div class="floating-icon">🍯</div>
+                    <div class="floating-icon">🧁</div>
+                    <div class="floating-icon">🍰</div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card sales-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="total-sales">0</div>
+                        <div class="stat-label">إجمالي المبيعات اليوم</div>
+                        <div class="stat-change positive">+12.5%</div>
+                    </div>
+                    <div class="stat-chart">
+                        <div class="mini-chart" id="sales-mini-chart"></div>
+                    </div>
+                </div>
+                
+                <div class="stat-card vehicles-card">
+                    <div class="stat-icon">🚛</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="active-vehicles">0</div>
+                        <div class="stat-label">المركبات النشطة</div>
+                        <div class="stat-change positive">+2</div>
+                    </div>
+                    <div class="stat-progress">
+                        <div class="progress-bar" style="width: 85%"></div>
+                    </div>
+                </div>
+                
+                <div class="stat-card customers-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="active-customers">0</div>
+                        <div class="stat-label">العملاء النشطون</div>
+                        <div class="stat-change positive">+5.2%</div>
+                    </div>
+                    <div class="stat-trend">
+                        <div class="trend-line"></div>
+                    </div>
+                </div>
+                
+                <div class="stat-card orders-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="completed-orders">0</div>
+                        <div class="stat-label">الطلبات المكتملة</div>
+                        <div class="stat-change positive">+8.1%</div>
+                    </div>
+                    <div class="stat-pulse"></div>
+                </div>
+            </div>
+
+            <!-- Charts and Map Grid -->
+            <div class="dashboard-grid">
+                <!-- Sales Chart -->
+                <div class="chart-container glass">
+                    <div class="chart-header">
+                        <h3>اتجاه المبيعات</h3>
+                        <div class="chart-controls">
+                            <button class="chart-btn active">يومي</button>
+                            <button class="chart-btn">أسبوعي</button>
+                            <button class="chart-btn">شهري</button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <canvas id="sales-chart"></canvas>
+                    </div>
+                    <div class="chart-summary">
+                        <div class="summary-item">
+                            <span class="summary-label">أعلى مبيعات</span>
+                            <span class="summary-value success">62,000 ريال</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">المتوسط</span>
+                            <span class="summary-value">52,400 ريال</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">النمو</span>
+                            <span class="summary-value success">+12.5%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Operations Map -->
+                <div class="map-container glass">
+                    <div class="map-header">
+                        <h3>العمليات المباشرة</h3>
+                        <div class="live-indicator">
+                            <div class="live-dot"></div>
+                            <span>مباشر</span>
+                        </div>
+                    </div>
+                    <div class="map-filters">
+                        <button class="filter-btn active" data-filter="all">الكل</button>
+                        <button class="filter-btn" data-filter="vehicles">المركبات</button>
+                        <button class="filter-btn" data-filter="outlets">المنافذ</button>
+                        <button class="filter-btn" data-filter="deliveries">التوصيلات</button>
+                    </div>
+                    <div class="map-content">
+                        <div id="operations-map"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-container glass">
+                <div class="activity-header">
+                    <h3>النشاط الأخير</h3>
+                    <button class="view-all-btn">عرض الكل</button>
+                </div>
+                <div class="activity-list" id="activity-list">
+                    <!-- Activities will be loaded dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="section">
+            <div class="section-header">
+                <h2>إدارة المنتجات</h2>
+                <button class="btn btn-primary" onclick="openProductModal()">
+                    <span class="btn-icon">+</span>
+                    إضافة منتج جديد
+                </button>
+            </div>
+
+            <div class="filters-bar">
+                <div class="search-box">
+                    <input type="text" id="product-search" placeholder="البحث عن المنتجات...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <select id="category-filter" class="filter-select">
+                    <option value="">جميع الفئات</option>
+                    <option value="حلويات مبردة">حلويات مبردة</option>
+                    <option value="حلويات تقليدية">حلويات تقليدية</option>
+                </select>
+                <select id="brand-filter" class="filter-select">
+                    <option value="">جميع العلامات</option>
+                    <option value="Americana">أمريكانا</option>
+                    <option value="SSDP">SSDP</option>
+                </select>
+            </div>
+
+            <div class="products-grid" id="products-grid">
+                <!-- Products will be loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- Other sections will be added similarly -->
+    </main>
+
+    <!-- Modals -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة منتج جديد</h3>
+                <button class="modal-close" onclick="closeModal('product-modal')">&times;</button>
+            </div>
+            <form id="product-form" class="modal-form">
+                <div class="form-group">
+                    <label>رمز المنتج (SKU)</label>
+                    <input type="text" name="sku" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>الاسم بالعربية</label>
+                        <input type="text" name="name_ar" required>
+                    </div>
+                    <div class="form-group">
+                        <label>الاسم بالإنجليزية</label>
+                        <input type="text" name="name_en" required>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('product-modal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">حفظ المنتج</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/assets/js/enhanced.js"></script>
+</body>
+</html>

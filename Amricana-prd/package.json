@@ -11,8 +11,11 @@
     "build": "npm run build:web && npm run build:mobile",
     "build:web": "cd apps/ssdp-web && npm run build",
     "build:mobile": "cd apps/ssdp-mobile && npm run build",
+    "build:cf": "cd apps/ssdp-web && npm run build:cf",
     "deploy": "./scripts/deploy.sh",
-    "deploy:workers": "cd workers && wrangler deploy",
+    "deploy:cloudflare": "./scripts/deploy-cloudflare.sh",
+    "deploy:cf": "npm run deploy:cloudflare",
+    "deploy:workers": "cd cf-workers/ssdp-api && npm install && npx wrangler deploy",
     "test": "jest",
     "test:mobile": "cd apps/ssdp-mobile && npm test",
     "test:web": "cd apps/ssdp-web && npm test",
@@ -21,7 +24,8 @@
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
-    "setup": "npm install && cd apps/ssdp-mobile && npm install && cd ../ssdp-web && npm install"
+    "setup": "npm install && cd apps/ssdp-mobile && npm install && cd ../ssdp-web && npm install",
+    "deploy:cloudflare": "./scripts/deploy-cloudflare.sh"
   },
   "keywords": [
     "saudi-arabia",

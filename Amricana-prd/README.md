@@ -222,3 +222,32 @@ SSDP is developed by [BrainSAIT](https://brainsait.com), a leading healthcare an
   <p><strong>Built with ❤️ in Saudi Arabia 🇸🇦</strong></p>
   <p>Empowering the sweet distribution industry through intelligent technology</p>
 </div>
+
+## ☁️ Cloudflare Deployment
+
+The web dashboard and API worker are optimized for Cloudflare's edge platform.
+
+### Prerequisites
+- Install the [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install/): `npm install -g wrangler`
+- Export Cloudflare credentials: `CLOUDFLARE_ACCOUNT_ID` and an API token with Pages + Workers access
+- (Optional) Set `CLOUDFLARE_PAGES_PROJECT` / `CLOUDFLARE_PAGES_BRANCH` to override defaults
+
+### One-command deploy
+```bash
+npm run deploy:cloudflare
+```
+This script will:
+1. Build the Next.js dashboard with `@cloudflare/next-on-pages` (output in `.vercel/output/`)
+2. Deploy the static site + functions bundle to Cloudflare Pages
+3. Deploy the unified API gateway from `cf-workers/ssdp-api`
+
+### Environment sync
+- Frontend reads backend endpoints from `NEXT_PUBLIC_DISTRIBUTION_API` (FastAPI) and optional `NEXT_PUBLIC_WORKER_API` (Cloudflare Worker)
+- Update `apps/ssdp-web/.env.example`, then mirror the variables in the Cloudflare Pages project settings
+- On successful deployment, the live dashboard pulls operations, analytics, and outlet data directly from the FastAPI/Worker APIs
+
+### Git & CI/CD
+- Push changes to the main branch to sync with the remote GitHub repository
+- Configure Pages/Workers CI hooks (or GitHub Actions) to execute `npm run deploy:cloudflare` after tests
+- Audit logs and deployment metadata remain available through Cloudflare's dashboard
+

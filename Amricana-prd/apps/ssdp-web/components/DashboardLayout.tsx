@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 
@@ -6,14 +6,17 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 rtl:text-right">
+    <div className="min-h-screen bg-oasis text-white">
+      <div className="fixed inset-0 -z-10 bg-mesh-oasis" />
+      <div className="fixed inset-0 -z-20 bg-[radial-gradient(circle_at_20%_20%,rgba(249,115,22,0.12),transparent_55%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.14),transparent_45%),linear-gradient(120deg,rgba(15,23,42,0.95),rgba(15,23,42,0.85))]" />
+
       <div className="flex">
         <Sidebar />
-        <div className="flex-1 flex flex-col">
+        <div className="flex min-h-screen flex-1 flex-col">
           <Header />
-          <main className="flex-1 p-6">
+          <main className="flex-1 space-y-6 px-6 pb-12 pt-6">
             {children}
           </main>
         </div>
