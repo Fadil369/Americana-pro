@@ -1,0 +1,59 @@
+{
+  "common": {
+    "dashboard": "Dashboard",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search metrics, customers or regions…",
+    "viewMore": "View more"
+  },
+  "header": {
+    "commandCenter": "BrainSAIT Command Center",
+    "strapline": "Real-time Saudi distribution intelligence",
+    "notifications": "Notifications",
+    "language": "Switch language",
+    "theme": "Toggle theme",
+    "profile": "Profile",
+    "uptime": "System Uptime",
+    "compliance": "Compliance",
+    "fraud": "Fraud Watch",
+    "sla": "Service SLAs",
+    "live": "Live",
+    "viewAlerts": "View alerts"
+  },
+  "sidebar": {
+    "dashboard": "Command Hub",
+    "products": "Product Catalog",
+    "outlets": "Outlet Network",
+    "orders": "Order Flow",
+    "deliveries": "Fleet Ops",
+    "analytics": "Analytics",
+    "users": "Digital Identity",
+    "reports": "Reports",
+    "map": "Live Map",
+    "payments": "Payments",
+    "settings": "Settings",
+    "academy": "BrainSAIT Academy",
+    "quickStats": "Quick Signals",
+    "madeIn": "Made in Saudi Arabia",
+    "inc": "BrainSAIT © 2025"
+  },
+  "dashboard": {
+    "title": "Smart Sweet Distribution Platform",
+    "description": "Main dashboard for managing sweet distribution in Saudi Arabia",
+    "welcome": "Welcome to Smart Sweet Distribution Platform",
+    "subtitle": "Empowering Saudi Arabia's sweet distribution market",
+    "vision2030": "Saudi Vision 2030"
+  },
+  "stats": {
+    "totalSales": "Total Sales",
+    "activeOutlets": "Active Outlets",
+    "deliveries": "Deliveries",
+    "revenue": "Revenue"
+  }
+}
