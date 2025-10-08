@@ -1,0 +1,156 @@
+version: '3.8'
+
+services:
+  # HAPI FHIR Server (PostgreSQL-backed)
+  fhir-server:
+    image: hapiproject/hapi:latest
+    container_name: brainsait-fhir-server
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      # Database Configuration
+      spring.datasource.url: jdbc:postgresql://fhir-db:5432/fhir
+      spring.datasource.username: fhiruser
+      spring.datasource.password: fhirpass
+      spring.datasource.driverClassName: org.postgresql.Driver
+      spring.jpa.properties.hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgres94Dialect
+
+      # FHIR Configuration
+      hapi.fhir.fhir_version: R4
+      hapi.fhir.server_address: http://localhost:8080/fhir
+      hapi.fhir.tester.home.name: BrainSAIT FHIR Server
+      hapi.fhir.tester.home.server_address: http://localhost:8080/fhir
+
+      # BrainSAIT Specific Configuration
+      hapi.fhir.server.name: BrainSAIT Healthcare Platform FHIR Server
+      hapi.fhir.implementationguides.sudan_ig.name: Sudan Healthcare Implementation Guide
+      hapi.fhir.implementationguides.saudi_ig.name: Saudi Arabia (NPHIES) Implementation Guide
+
+      # Performance & Features
+      hapi.fhir.subscription.resthook.enabled: true
+      hapi.fhir.subscription.websocket.enabled: true
+      hapi.fhir.allow_external_references: true
+      hapi.fhir.allow_multiple_delete: false
+      hapi.fhir.allow_cascading_deletes: false
+      hapi.fhir.cors.enabled: true
+      hapi.fhir.cors.allowed_origin: "*"
+
+      # Validation
+      hapi.fhir.validation.requests_enabled: true
+      hapi.fhir.validation.responses_enabled: false
+
+      # Search & Indexing
+      hapi.fhir.lastn_enabled: true
+      hapi.fhir.reuse_cached_search_results_millis: 60000
+
+      # Security
+      hapi.fhir.enforce_referential_integrity_on_write: true
+      hapi.fhir.enforce_referential_integrity_on_delete: true
+
+      # Logging
+      hapi.fhir.logger.name: brainsait.fhirserver.accesslog
+      hapi.fhir.logger.format: "Path[${servletPath}] Source[${requestHeader.x-forwarded-for}] Operation[${operationType} ${operationName} ${idOrResourceName}] UA[${requestHeader.user-agent}] Params[${requestParameters}] ResponseEncoding[${responseEncodingNoDefault}]"
+      hapi.fhir.logger.log_exceptions: true
+
+      # Java Options
+      JAVA_OPTS: "-Xms512m -Xmx2g"
+
+    depends_on:
+      fhir-db:
+        condition: service_healthy
+
+    volumes:
+      - ./config:/app/config
+      - fhir-data:/app/target
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/fhir/metadata"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+    networks:
+      - brainsait-network
+
+  # PostgreSQL Database for FHIR Server
+  fhir-db:
+    image: postgres:15-alpine
+    container_name: brainsait-fhir-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: fhir
+      POSTGRES_USER: fhiruser
+      POSTGRES_PASSWORD: fhirpass
+      PGDATA: /var/lib/postgresql/data/pgdata
+
+    volumes:
+      - fhir-db-data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fhiruser -d fhir"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - brainsait-network
+
+  # Redis for caching and real-time features
+  redis:
+    image: redis:7-alpine
+    container_name: brainsait-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+    command: redis-server --appendonly yes
+
+    volumes:
+      - redis-data:/data
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - brainsait-network
+
+  # Optional: PgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: brainsait-pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@brainsait.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+    networks:
+      - brainsait-network
+
+    profiles:
+      - admin
+
+volumes:
+  fhir-db-data:
+    driver: local
+  fhir-data:
+    driver: local
+  redis-data:
+    driver: local
+  pgadmin-data:
+    driver: local
+
+networks:
+  brainsait-network:
+    driver: bridge
