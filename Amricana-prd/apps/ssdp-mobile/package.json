@@ -21,7 +21,6 @@
     "expo-location": "~16.5.0",
     "expo-camera": "~14.0.0",
     "expo-barcode-scanner": "~12.9.0",
-    "react-native-voice": "^3.2.4",
     "zustand": "^4.4.7"
   },
   "devDependencies": {
