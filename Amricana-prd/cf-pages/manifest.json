@@ -1,0 +1,32 @@
+{
+  "name": "منصة توزيع الحلويات الذكية",
+  "short_name": "SSDP",
+  "description": "Smart Sweet Distribution Platform for Saudi Arabia",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ea580c",
+  "theme_color": "#ea580c",
+  "orientation": "portrait-primary",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "screenshots": [
+    {
+      "src": "/assets/images/screenshot-1.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ]
+}

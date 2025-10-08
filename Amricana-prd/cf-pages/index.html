@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة توزيع الحلويات الذكية - SSDP</title>
+    <meta name="description" content="منصة توزيع الحلويات الذكية في المملكة العربية السعودية">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/assets/css/main.css" as="style">
+    <link rel="preload" href="/assets/js/main.js" as="script">
+    <link rel="preload" href="/assets/fonts/noto-sans-arabic.woff2" as="font" type="font/woff2" crossorigin>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#ea580c">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="منصة توزيع الحلويات الذكية">
+    <meta property="og:description" content="تمكين سوق توزيع الحلويات في السعودية">
+    <meta property="og:image" content="/assets/images/og-image.jpg">
+    <meta property="og:type" content="website">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-animation">
+            <div class="honey-drop"></div>
+            <div class="loading-text">جاري التحميل...</div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="/assets/icons/logo.svg" alt="SSDP" class="logo">
+                <span class="brand-text">منصة توزيع الحلويات</span>
+            </div>
+            
+            <div class="nav-menu" id="nav-menu">
+                <a href="#dashboard" class="nav-link active">لوحة التحكم</a>
+                <a href="#products" class="nav-link">المنتجات</a>
+                <a href="#outlets" class="nav-link">المنافذ</a>
+                <a href="#orders" class="nav-link">الطلبات</a>
+                <a href="#analytics" class="nav-link">التحليلات</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="lang-toggle" onclick="toggleLanguage()">EN</button>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+                <button class="nav-toggle" onclick="toggleNav()">☰</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <div class="container">
+                <div class="section-header">
+                    <h1 class="section-title">لوحة التحكم الرئيسية</h1>
+                    <div class="date-display" id="current-date"></div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card" data-stat="sales">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="total-sales">0</div>
+                            <div class="stat-label">إجمالي المبيعات اليوم</div>
+                            <div class="stat-change positive">+12.5%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" data-stat="vehicles">
+                        <div class="stat-icon">🚛</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="active-vehicles">0</div>
+                            <div class="stat-label">المركبات النشطة</div>
+                            <div class="stat-change positive">+2</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" data-stat="customers">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="active-customers">0</div>
+                            <div class="stat-label">العملاء النشطون</div>
+                            <div class="stat-change positive">+5.2%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card" data-stat="orders">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="completed-orders">0</div>
+                            <div class="stat-label">الطلبات المكتملة</div>
+                            <div class="stat-change positive">+8.1%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts and Map -->
+                <div class="dashboard-grid">
+                    <div class="chart-container">
+                        <h3>تحليل المبيعات</h3>
+                        <canvas id="sales-chart"></canvas>
+                    </div>
+                    
+                    <div class="map-container">
+                        <h3>العمليات المباشرة</h3>
+                        <div id="operations-map"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">إدارة المنتجات</h2>
+                    <button class="btn btn-primary" onclick="openProductModal()">
+                        <span class="btn-icon">+</span>
+                        إضافة منتج جديد
+                    </button>
+                </div>
+
+                <!-- Product Filters -->
+                <div class="filters-bar">
+                    <div class="search-box">
+                        <input type="text" id="product-search" placeholder="البحث عن المنتجات...">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    
+                    <select id="category-filter" class="filter-select">
+                        <option value="">جميع الفئات</option>
+                        <option value="حلويات مبردة">حلويات مبردة</option>
+                        <option value="حلويات تقليدية">حلويات تقليدية</option>
+                    </select>
+                    
+                    <select id="brand-filter" class="filter-select">
+                        <option value="">جميع العلامات</option>
+                        <option value="Americana">أمريكانا</option>
+                        <option value="SSDP">SSDP</option>
+                    </select>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="products-grid" id="products-grid">
+                    <!-- Products will be loaded dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Outlets Section -->
+        <section id="outlets" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">إدارة المنافذ</h2>
+                    <button class="btn btn-primary" onclick="openOutletModal()">
+                        <span class="btn-icon">+</span>
+                        تسجيل منفذ جديد
+                    </button>
+                </div>
+
+                <!-- Outlets Map -->
+                <div class="outlets-map-container">
+                    <div id="outlets-map"></div>
+                </div>
+
+                <!-- Outlets List -->
+                <div class="outlets-list" id="outlets-list">
+                    <!-- Outlets will be loaded dynamically -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة منتج جديد</h3>
+                <button class="modal-close" onclick="closeModal('product-modal')">&times;</button>
+            </div>
+            <form id="product-form" class="modal-form">
+                <div class="form-group">
+                    <label>رمز المنتج (SKU)</label>
+                    <input type="text" name="sku" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>الاسم بالعربية</label>
+                        <input type="text" name="name_ar" required>
+                    </div>
+                    <div class="form-group">
+                        <label>الاسم بالإنجليزية</label>
+                        <input type="text" name="name_en" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>الفئة</label>
+                    <select name="category" required>
+                        <option value="حلويات مبردة">حلويات مبردة</option>
+                        <option value="حلويات تقليدية">حلويات تقليدية</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>السعر (ريال)</label>
+                        <input type="number" name="price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>الكمية</label>
+                        <input type="number" name="stock_quantity" required>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('product-modal')">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">حفظ المنتج</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/components.js"></script>
+    <script src="/assets/js/api.js"></script>
+    
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    </script>
+</body>
+</html>
