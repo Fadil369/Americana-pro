@@ -9,6 +9,7 @@
   "dashboard": {
     "welcome": "Welcome",
     "todayTarget": "Today's Target",
+    "target": "Target",
     "achieved": "Achieved",
     "pendingOrders": "Pending Orders",
     "completedDeliveries": "Completed Deliveries"
@@ -36,5 +37,21 @@
     "customers": "Customers",
     "reports": "Reports",
     "profile": "Profile"
+  },
+  "salesRep": {
+    "checkIn": "Check In",
+    "voiceOrder": "Voice Order",
+    "arCatalog": "AR Catalog",
+    "collections": "Collections",
+    "outlets": "Outlets",
+    "map": "Map"
+  },
+  "driver": {
+    "route": "Route",
+    "manifest": "Manifest",
+    "proofOfDelivery": "Proof of Delivery",
+    "incident": "Report Incident",
+    "vehicle": "Vehicle",
+    "earnings": "Earnings"
   }
 }
