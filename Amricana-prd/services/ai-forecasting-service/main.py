@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -6,12 +7,25 @@ from typing import List, Dict
 import joblib
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
+import sys
+import os
+
+# SECURITY: Add audit logger package to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'packages', 'audit-logger', 'src'))
+
+from audit_logger import get_audit_logger, AuditAction, ResourceType, SeverityLevel
+from permission_guard import get_permission_guard
 
 app = FastAPI(
     title="SSDP AI Forecasting Service",
     description="AI-powered demand forecasting for Saudi sweet distribution",
     version="1.0.0"
 )
+
+# SECURITY: Initialize security components
+security = HTTPBearer()
+audit_logger = get_audit_logger()
+permission_guard = get_permission_guard()
 
 class SweetDemandForecaster:
     def __init__(self):
@@ -120,9 +134,36 @@ async def root():
     return {"message": "SSDP AI Forecasting Service", "version": "1.0.0"}
 
 @app.get("/forecast/demand")
-async def get_demand_forecast(days_ahead: int = 30, region: str = "Riyadh"):
-    """Get demand forecast for specified region and time period"""
+async def get_demand_forecast(
+    days_ahead: int = 30,
+    region: str = "Riyadh",
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """SECURITY: Get demand forecast with audit logging"""
+    # Extract user info
+    user_id = "current_user"
+    user_role = "regional_manager"  # TODO: Extract from JWT
+    
+    # SECURITY: Check permission (managers can view forecasts)
+    if not permission_guard.has_permission(user_role, "read:report"):
+        audit_logger.log_security_event(
+            user_id=user_id,
+            event_type="unauthorized_access",
+            details={"endpoint": "/forecast/demand", "required_permission": "read:report"},
+            severity=SeverityLevel.WARNING
+        )
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
     try:
+        # HIPAA: Log forecast access
+        audit_logger.log(
+            user_id=user_id,
+            action=AuditAction.READ,
+            resource_type=ResourceType.REPORT,
+            resource_id=f"forecast-{region}",
+            details={"forecast_type": "demand", "days_ahead": days_ahead, "region": region}
+        )
+        
         forecast = forecaster.forecast_demand(days_ahead, region)
         return {
             "status": "success",
@@ -135,8 +176,31 @@ async def get_demand_forecast(days_ahead: int = 30, region: str = "Riyadh"):
         return {"status": "error", "message": str(e)}
 
 @app.get("/forecast/products")
-async def get_product_forecast():
-    """Get product-specific demand forecast"""
+async def get_product_forecast(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """SECURITY: Get product-specific demand forecast with audit logging"""
+    # Extract user info
+    user_id = "current_user"
+    user_role = "regional_manager"  # TODO: Extract from JWT
+    
+    # SECURITY: Check permission
+    if not permission_guard.has_permission(user_role, "read:report"):
+        audit_logger.log_security_event(
+            user_id=user_id,
+            event_type="unauthorized_access",
+            details={"endpoint": "/forecast/products", "required_permission": "read:report"},
+            severity=SeverityLevel.WARNING
+        )
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
+    # HIPAA: Log forecast access
+    audit_logger.log(
+        user_id=user_id,
+        action=AuditAction.READ,
+        resource_type=ResourceType.REPORT,
+        resource_id="forecast-products",
+        details={"forecast_type": "product"}
+    )
+    
     products = [
         {"id": "PRD001", "name": "بقلاوة", "name_en": "Baklava"},
         {"id": "PRD002", "name": "كنافة", "name_en": "Kunafa"},
