@@ -95,12 +95,13 @@ export default function PerformanceHeatmaps({ locale = 'ar', isRTL = true }: Per
   }, [])
 
   const getMetricValue = (region: HeatmapData) => {
+    if (!region) return 0
     switch (selectedMetric) {
-      case 'sales': return region.sales
-      case 'orders': return region.orders
-      case 'outlets': return region.outlets
-      case 'growth': return region.growth
-      default: return region.sales
+      case 'sales': return region.sales || 0
+      case 'orders': return region.orders || 0
+      case 'outlets': return region.outlets || 0
+      case 'growth': return region.growth || 0
+      default: return region.sales || 0
     }
   }
 
@@ -111,10 +112,10 @@ export default function PerformanceHeatmaps({ locale = 'ar', isRTL = true }: Per
     return 'from-yellow-500/60 to-green-500/60'
   }
 
-  const sortedData = [...heatmapData].sort((a, b) => getMetricValue(b) - getMetricValue(a))
-  const maxValue = Math.max(...sortedData.map(getMetricValue))
-  const topRegion = sortedData[0]
-  const bottomRegion = sortedData[sortedData.length - 1]
+  const sortedData = heatmapData && heatmapData.length > 0 ? [...heatmapData].sort((a, b) => getMetricValue(b) - getMetricValue(a)) : []
+  const maxValue = sortedData.length > 0 ? Math.max(...sortedData.map(getMetricValue)) : 1
+  const topRegion = sortedData.length > 0 ? sortedData[0] : null
+  const bottomRegion = sortedData.length > 0 ? sortedData[sortedData.length - 1] : null
 
   return (
     <motion.div
@@ -240,6 +241,7 @@ export default function PerformanceHeatmaps({ locale = 'ar', isRTL = true }: Per
 
       {/* Performance Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {topRegion && (
         <div className="bg-white/10 rounded-2xl p-4 border border-white/10">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
@@ -248,18 +250,20 @@ export default function PerformanceHeatmaps({ locale = 'ar', isRTL = true }: Per
             <div>
               <p className="text-xs text-white/60">{text.topRegion}</p>
               <p className="text-lg font-bold text-white">
-                {locale === 'ar' ? topRegion?.region_ar : topRegion?.region}
+                {locale === 'ar' ? topRegion.region_ar : topRegion.region}
               </p>
             </div>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-white/70">{text.performance}</span>
             <span className="text-green-400 font-semibold">
-              {selectedMetric === 'growth' ? `+${topRegion?.growth}%` : getMetricValue(topRegion).toLocaleString()}
+              {selectedMetric === 'growth' ? `+${topRegion.growth}%` : getMetricValue(topRegion).toLocaleString()}
             </span>
           </div>
         </div>
+        )}
 
+        {bottomRegion && (
         <div className="bg-white/10 rounded-2xl p-4 border border-white/10">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-yellow-500/20 flex items-center justify-center">
@@ -268,17 +272,18 @@ export default function PerformanceHeatmaps({ locale = 'ar', isRTL = true }: Per
             <div>
               <p className="text-xs text-white/60">{text.needsAttention}</p>
               <p className="text-lg font-bold text-white">
-                {locale === 'ar' ? bottomRegion?.region_ar : bottomRegion?.region}
+                {locale === 'ar' ? bottomRegion.region_ar : bottomRegion.region}
               </p>
             </div>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-white/70">{text.performance}</span>
             <span className="text-yellow-400 font-semibold">
-              {selectedMetric === 'growth' ? `+${bottomRegion?.growth}%` : getMetricValue(bottomRegion).toLocaleString()}
+              {selectedMetric === 'growth' ? `+${bottomRegion.growth}%` : getMetricValue(bottomRegion).toLocaleString()}
             </span>
           </div>
         </div>
+        )}
       </div>
     </motion.div>
   )
