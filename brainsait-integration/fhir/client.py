@@ -353,7 +353,7 @@ class FHIRClient:
 
         response = self._make_request('POST', '/Observation', data=observation_data)
 
-        logger.info(f"Observation created: {response['id']} for patient {patient_id}")
+        logger.info(f"Observation created: {response['id']} for patient [REDACTED]")
         return Observation(**response)
 
     def get_patient_observations(self, patient_id: str) -> List[Observation]:
