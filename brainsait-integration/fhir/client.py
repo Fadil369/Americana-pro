@@ -378,7 +378,7 @@ class FHIRClient:
             for entry in response['entry']:
                 observations.append(Observation(**entry['resource']))
 
-        logger.info(f"Found {len(observations)} observations for patient {patient_id}")
+        logger.info(f"Found {len(observations)} observations for patient [REDACTED]")
         return observations
 
     def create_organization(
