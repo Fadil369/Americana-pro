@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Lightbulb, TrendingUp, TrendingDown, DollarSign, Package, Users, Calendar } from 'lucide-react'
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { Lightbulb, TrendingUp, TrendingDown, DollarSign, Package, Users } from 'lucide-react'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
 interface Scenario {
   id: string
@@ -25,7 +25,7 @@ interface ScenarioPlanningProps {
 
 // BRAINSAIT: What-if scenario planning tool for managers
 // NEURAL: Interactive scenario modeling and visualization
-export default function ScenarioPlanning({ locale = 'ar', isRTL = true }: ScenarioPlanningProps) {
+export default function ScenarioPlanning({ locale = 'ar' }: ScenarioPlanningProps) {
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null)
   const [customParams, setCustomParams] = useState({
     priceChange: 0,

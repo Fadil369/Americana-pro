@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { MessageCircle, Send, X, Sparkles, TrendingUp, Package, DollarSign, Users } from 'lucide-react'
+import { MessageCircle, Send, X, Sparkles, TrendingUp, Package, Users } from 'lucide-react'
 
 interface Message {
   id: string
@@ -76,11 +76,11 @@ export default function AIChatbot({ locale = 'ar', isRTL = true }: AIChatbotProp
         timestamp: new Date()
       }])
     }
-  }, [isOpen])
+  }, [isOpen, text.welcome, messages.length])
 
   useEffect(() => {
     scrollToBottom()
-  }, [messages])
+  }, [messages.length])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -131,11 +131,6 @@ export default function AIChatbot({ locale = 'ar', isRTL = true }: AIChatbotProp
         ? 'عذراً، لم أفهم سؤالك بشكل كامل. يمكنك تجربة أحد الأسئلة المقترحة أو صياغة السؤال بطريقة مختلفة.'
         : 'Sorry, I didn\'t quite understand your question. You can try one of the suggested questions or rephrase your query.'
     }
-  }
-
-  const handleSuggestionClick = (suggestion: string) => {
-    setInput(suggestion)
-    handleSend()
   }
 
   const suggestions = [

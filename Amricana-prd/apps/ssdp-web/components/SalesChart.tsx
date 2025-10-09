@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, type TooltipProps } from 'recharts'
+import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent'
 
 interface SalesChartProps {
   data: Array<{ date: string; amount: number }>
@@ -49,7 +50,7 @@ export default function SalesChart({ data = [], locale, isRTL }: SalesChartProps
     ? chartData.reduce((sum, point) => sum + point.amount, 0) / chartData.length
     : 0
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
     if (!active || !payload?.length) return null
     return (
       <motion.div
@@ -58,7 +59,7 @@ export default function SalesChart({ data = [], locale, isRTL }: SalesChartProps
         className="rounded-2xl border border-white/10 bg-brand-navy/95 px-4 py-3 text-sm text-white shadow-lg"
       >
         <p className="font-semibold text-white">{label}</p>
-        <p className="text-white/60">{formatCurrency(payload[0].value)}</p>
+        <p className="text-white/60">{formatCurrency(Number(payload[0]?.value) || 0)}</p>
       </motion.div>
     )
   }

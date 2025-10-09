@@ -184,7 +184,7 @@ export default function AnomalyDetection({ locale = 'ar', isRTL = true }: Anomal
     ]
 
     setAnomalies(mockAnomalies)
-  }, [])
+  }, [text.duplicatePayment, text.lateDelivery, text.paymentFailed, text.routeDeviation, text.stockShortage, text.unusualOrder])
 
   const filteredAnomalies = anomalies.filter(anomaly => {
     const typeMatch = filter === 'all' || anomaly.type === filter
