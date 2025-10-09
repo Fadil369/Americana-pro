@@ -136,7 +136,7 @@ class FHIRClient:
             return {}
 
         except requests.exceptions.RequestException as e:
-            logger.error(f"FHIR request failed: {method} {url} - {str(e)}")
+            logger.error(f"FHIR request failed: {method} endpoint - {str(e)}")
             raise
 
     def health_check(self) -> bool:
